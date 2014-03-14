@@ -1,6 +1,6 @@
 ##############################################################################
-# title         : SimCast_Meta.R;
-# purpose       : Create a SimCast_Meta GAM model for a daily time-step;
+# title         : SimCastMeta.R;
+# purpose       : Create a SimCastMeta GAM model for a daily or monthly time-step;
 # producer      : prepared by A. Sparks;
 # last update   : in Los Banos, IRRI, March 2014;
 # inputs        : blight unit values as calculated in SimCast_Blight_Units.R;
