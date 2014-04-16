@@ -11,36 +11,59 @@
 library(raster)
 library(dismo)
 
-# Download and read CRU data files
-# mean monthly diurnal temperature range
+##### Download and read CRU data files ####
+## mean monthly diurnal temperature range ####
 url.dtr <- "http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_dtr.dat.gz" 
 file.dtr <- "Data/CRU_dtr.gz"
 download.file(url.dtr, destfile = file.dtr, mode = "wb")
 dtr <- read.table('data/CRU_dtr.gz')
+xy <- dtr[, c(2, 1)]
+dtr <- dtr[, c(-1, -2)]
 
-# mean monthly temperature
+## mean monthly temperature ####
 url.tmp <- "http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz" 
 file.tmp <- "Data/CRU_tmp.gz"
 download.file(url.tmp, destfile = file.tmp, mode = "wb")
 tmp <- read.table('data/CRU_tmp.gz')
+tmp <- tmp[, c(-1, -2)]
 
-# mean monthly temperature
+## mean monthly precipitation #####
 url.pre <- "http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz" 
 file.pre <- "Data/CRU_pre.gz"
 download.file(url.pre, destfile = file.pre, mode = "wb")
 pre <- read.table('data/CRU_pre.gz')
+pre <- pre[, c(-1, -2)]
 
-# column names apply to all three files
-col.names <- c('lat', 'lon', 'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec')
-names(dtr) <- col.names
-names(tmp) <- col.names
-names(pre) <- col.names
+##### column names and later layer names for raster stack objects ####
+months <- c('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec')
+names(dtr) <- months
 
+#### calculate Tmax and Tmin from tmp and dtr (see: http://www.cru.uea.ac.uk/cru/data/hrg/tmc/readme.txt) #####
+tmx <- tmp+(0.5*dtr)
+tmn <- tmp-(0.5*dtr)
 
-# Set up a raster object to use as the basis for converting CRU data to raster objects at 10 arc minute resolution
+##### GIS work ####
+## set up a raster object to use as the basis for converting CRU data to raster objects at 10 arc minute resolution ####
 wrld <- raster(nrows = 900, ncols = 2160)
 
-points <- dtr[, c(2, 1)] # Take lon, lat from the data file
-jan.tmin <- rasterFromXYX(x = points, y = wrld, field = dtr[, 3], fun = mean) # Take the values and rasterize them, cell sizes are not regular, cannot use rasterFromXYZ()
+## Take the values and rasterize them, cell sizes are not regular, cannot use rasterFromXYZ() ####
+## create.stack takes pre, tmn and tmx and creates a raster object stack of 12 month data
+
+create.stack <- function(var){
+  for(i in 1:12){
+    x <- rasterize(x = paste(var, '[, c(2, 1)]', sep = ''), y = wrld, field = paste(var, "[, i]", sep = ''), fun = mean)
+    if(i == 1){
+      y <- x} else
+        {y <- stack(y, x)}
+  }
+  names(y) <- months
+}
+
+pre.stack <- create.stack(pre)
+tmn.stack <- create.stack(tmn)
+tmx.stack <- create.stack(tmx)
+
+#### run ECOCROP model on raster stack of precipitation, tmin and tmax #####
+
 
 #eos
