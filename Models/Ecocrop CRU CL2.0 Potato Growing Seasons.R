@@ -14,19 +14,19 @@ library(dismo)
 # Download and read CRU data files
 # mean monthly diurnal temperature range
 url.dtr <- "http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_dtr.dat.gz" 
-file.dtr <- "data/CRU_dtr.gz"
+file.dtr <- "Data/CRU_dtr.gz"
 download.file(url.dtr, destfile = file.dtr, mode = "wb")
 dtr <- read.table('data/CRU_dtr.gz')
 
 # mean monthly temperature
 url.tmp <- "http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz" 
-file.tmp <- "data/CRU_tmp.gz"
+file.tmp <- "Data/CRU_tmp.gz"
 download.file(url.tmp, destfile = file.tmp, mode = "wb")
 tmp <- read.table('data/CRU_tmp.gz')
 
 # mean monthly temperature
 url.pre <- "http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz" 
-file.pre <- "data/CRU_pre.gz"
+file.pre <- "Data/CRU_pre.gz"
 download.file(url.pre, destfile = file.pre, mode = "wb")
 pre <- read.table('data/CRU_pre.gz')
 
