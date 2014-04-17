@@ -48,20 +48,19 @@ wrld <- raster(nrows = 900, ncols = 2160)
 
 ## Take the values and rasterize them, cell sizes are not regular, cannot use rasterFromXYZ() ####
 ## create.stack takes pre, tmn and tmx and creates a raster object stack of 12 month data
-
-create.stack <- function(var){
-  for(i in 1:12){
-    x <- rasterize(x = paste(var, '[, c(2, 1)]', sep = ''), y = wrld, field = paste(var, "[, i]", sep = ''), fun = mean)
-    if(i == 1){
-      y <- x} else
-        {y <- stack(y, x)}
+create.stack <- function(wvar, xy, wrld){
+  for(i in 1:12){ 
+    x <- rasterize(x = xy, y = wrld, field = wvar[, i], fun = mean)
+    if(i == 1){y <- x} else y <- stack(y, x)
   }
   names(y) <- months
+  return(y)
+  rm(x)
 }
 
-pre.stack <- create.stack(pre)
-tmn.stack <- create.stack(tmn)
-tmx.stack <- create.stack(tmx)
+pre.stack <- create.stack(pre, xy, wrld)
+tmn.stack <- create.stack(tmn, xy, wrld)
+tmx.stack <- create.stack(tmx, xy, wrld)
 
 #### run ECOCROP model on raster stack of precipitation, tmin and tmax #####
 
