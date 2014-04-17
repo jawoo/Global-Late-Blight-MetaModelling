@@ -58,5 +58,4 @@ tmn <- readAll(tmn)
 tmx <- readAll(tmx)
 pre <- readAll(pre)
 
-r <- ecospat('Potato', tmn, tmx, tmp, pre, rainfed = TRUE,
-             filename = 'potplant.grd')
+#eos

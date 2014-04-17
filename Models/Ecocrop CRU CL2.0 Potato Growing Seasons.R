@@ -64,5 +64,7 @@ tmx.stack <- create.stack(tmx, xy, wrld)
 
 #### run ECOCROP model on raster stack of precipitation, tmin and tmax #####
 
+r <- ecospat('Potato', tmn, tmx, tmp, pre, rainfed = TRUE,
+             filename = 'potplant.grd')
 
 #eos
