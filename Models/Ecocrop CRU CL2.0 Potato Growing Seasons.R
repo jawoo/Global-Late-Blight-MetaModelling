@@ -8,8 +8,14 @@
 # remarks 1     : Download the CRU CL 2.0 Data here: http://www.cru.uea.ac.uk/cru/data/hrg/timm/grid/CRU_TS_2_0.html;
 ##############################################################################
 
+#### Libraries ####
 library(raster)
 library(dismo)
+##### End Libraries ####
+
+#### Load functions ####
+source ('../Functions/ecospat.R')
+#### End Functions ####
 
 ##### Download and read CRU data files ####
 ## mean monthly diurnal temperature range ####
