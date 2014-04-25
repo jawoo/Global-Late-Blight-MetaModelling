@@ -58,7 +58,7 @@ create.stack <- function(wvar, xy, wrld){
     x <- wrld
     cells <- cellFromXY(r, xy)
     for(i in 1:12){
-      x[cells] <- wvar[, i]/10
+      x[cells] <- wvar[, i]
       if(i == 1){y <- x} else y <- stack(y, x)
   }
   names(y) <- months
