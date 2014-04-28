@@ -9,16 +9,15 @@
 ##############################################################################
 
 ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
-  pot       <- getCrop(crop)
   filename  <- trim(filename)
   outr      <- raster(tmp)
   v         <- vector(length = ncol(outr))
   for (r in 1:nrow(outr)){
     v[] <- NA
     
-    temp <- getValues(tmp, r) / 10
-    tmin <- getValues(tmn, r) / 10
-    if (rainfed) { prec <- getValues(pre, r) / 10 }
+    temp <- getValues(tmp, r)
+    tmin <- getValues(tmn, r)
+    if (rainfed) { prec <- getValues(pre, r)}
     
     nac <- which(!is.na(tmin[, 1]))
     

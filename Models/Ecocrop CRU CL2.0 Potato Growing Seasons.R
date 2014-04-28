@@ -22,20 +22,20 @@ source ('../Functions/ecospat.R')
 tf <- tempfile()
 ## mean monthly diurnal temperature range ####
 download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_dtr.dat.gz", tf)
-dtr <- read.table(temp)
+dtr <- read.table(tf)
 xy <- dtr[, c(2, 1)]
 dtr <- dtr[, c(-1, -2)]
 dtr <- dtr/10
 
 ## mean monthly temperature ####
 download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz", tf)
-tmp <- read.table(temp)
+tmp <- read.table(tf)
 tmp <- tmp[, c(-1, -2)]
 tmp <- tmp/10
 
 ## mean monthly precipitation #####
 download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz", tf)
-pre <- read.table(temp)
+pre <- read.table(tf)
 pre <- pre[, c(-1, -2)]
 pre <- pre/10
 
@@ -53,13 +53,12 @@ wrld <- raster(nrows = 900, ncols = 2160, ymn = -60, ymx = 90, xmn = -180, xmx =
 
 ## Take the values and rasterize them, cell sizes are not regular, cannot use rasterFromXYZ() ####
 ## create.stack takes pre, tmn and tmx and creates a raster object stack of 12 month data
-## NOTE: this is time and procesor intensive
 create.stack <- function(wvar, xy, wrld){ 
-    x <- wrld
-    cells <- cellFromXY(r, xy)
-    for(i in 1:12){
-      x[cells] <- wvar[, i]
-      if(i == 1){y <- x} else y <- stack(y, x)
+  x <- wrld
+  cells <- cellFromXY(x, xy)
+  for(i in 1:12){
+    x[cells] <- wvar[, i]
+    if(i == 1){y <- x} else y <- stack(y, x)
   }
   names(y) <- months
   return(y)
@@ -69,11 +68,9 @@ create.stack <- function(wvar, xy, wrld){
 pre.stack <- create.stack(pre, xy, wrld)
 tmn.stack <- create.stack(tmn, xy, wrld)
 tmx.stack <- create.stack(tmx, xy, wrld)
+tmp.stack <- create.stack(tmp, xy, wrld)
 
 #### Download MIRCA 2000 Maximum Harvested Area for Potato (Crop #10) to use as a mask ####
-download.file( file.path , tf , mode = "wb" )
-files.data <- unzip( tf , exdir = td)
-
 url <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz"
 download.file(url, "Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
 system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz") #I don't like to call 7zip here, but there's something odd with the file and gnutar (thus untar) will not work
@@ -88,6 +85,7 @@ tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
 
 #### run ECOCROP model on raster stack of precipitation, tmin and tmax #####
+## set parameters
 pot       <- getCrop('potato')
 pot@RMIN  <- 125
 pot@ROPMN <- 250
@@ -96,8 +94,8 @@ pot@TMIN  <- 7
 pot@TOPMX <- 20
 pot@GMIN  <- pot@GMAX <- 100
 
-prf <- ecospat('potato', tmn, tmx, tmp, pre, rainfed = TRUE, filename = 'Cache/Planting Seasons/CRUCL2.0_PRF.grd', overwrite = TRUE) # Rainfed potato
-pir <- ecospat('potato', tmn, tmx, tmp, pre, rainfed = FALSE, filename = 'Cache/Planting Seasons/CRUCL2.0_PIR.grd', overwrite = TRUE) # Irrigated potato
+prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = 'Cache/Planting Seasons/CRUCL2.0_PRF.grd', overwrite = TRUE) # Rainfed potato
+pir <- ecospat(pot, tmn, tmx, tmp, pre, rainfed = FALSE, filename = 'Cache/Planting Seasons/CRUCL2.0_PIR.grd', overwrite = TRUE) # Irrigated potato
 
 rfp <- raster(paste('tmp/poplant_a2', gcm, '_', timeslice, '_PRF.grd', sep = '')) # rainfed potato
 rfp <- reclassify(rfp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
