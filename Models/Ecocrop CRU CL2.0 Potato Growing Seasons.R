@@ -83,6 +83,7 @@ MIRCA <- crop(MIRCA, pre.stack)
 pre.stack <- mask(pre.stack, MIRCA)
 tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
+tmp.stack <- mask(tmp.stack, MIRCA)
 
 #### run ECOCROP model on raster stack of precipitation, tmin and tmax #####
 ## set parameters
