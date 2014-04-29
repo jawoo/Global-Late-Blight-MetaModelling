@@ -16,7 +16,7 @@ The study for which these models were developed can be found in [Sparks, A. H., 
       * susceptible_daily_gam.txt - Look up table values for a resistant potato cultivar, daily time-step
       * susceptible_monthly_gam.txt - Look up table values for a resistant potato cultivar, daily time-step
 * **Data** - Contains supporting data that is unmodified, nothing should be upload here via git. It is for downloading and storage only while in use.
-* **Functions ** - Contains scripts with functions that are used across several scripts for sharing
+* **Functions** - Contains scripts with functions that are used across several scripts for sharing
       * ecospat.R - Function used to run the EcoCrop model to predict planting dates for use with SimCastMeta
 * **Models** - Contains the scripts for the models used in this project
   * SimCast_Blight_Units.R - The blight unit portion of the SimCast model, as described in [Grünwald et al. 2002](http://grunwaldlab.cgrb.oregonstate.edu/potato-late-blight-management-toluca-valley-field-validation-simcast-modified-cultivars-high-field)
