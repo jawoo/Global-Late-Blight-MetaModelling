@@ -14,7 +14,7 @@ library(dismo)
 ##### End Libraries ####
 
 #### Load functions ####
-source ("../Functions/ecospat.R")
+source ("Functions/ecospat.R")
 #### End Functions ####
 
 ##### Download and read CRU data files ####
