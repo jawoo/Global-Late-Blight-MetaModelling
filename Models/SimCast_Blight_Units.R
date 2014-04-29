@@ -5,7 +5,7 @@
 #                 Potato Late Blight Management in the Toluca Valley: Field Validation of SimCast Modified for 
 #                 Cultivars with High Field Resistance. Plant Disease, 86, 1163–1168.;
 # producer      : prepared by A. Sparks and K. Garrett;
-# last update   : in IRRI, Los Baños, Laguna, Philippines, March 2014;
+# last update   : in Los Baños, Laguna, Philippines, April 2014;
 # inputs        : HUSWO weather data to calculate blight units for each weather station in the dataset;
 # outputs       : blight unit values, averaged hourly weather data to daily for each weather station;
 # remarks 1     : cultivar resistance values are changed on line 134;
@@ -16,21 +16,21 @@
 ##############################################################################
 
 # select working directory where weather data is located
-setwd('setwd('')')
+setwd("setwd("")")
 
 # Run this function to genearate blight unit calculations
 # for the HUSWO data set
 DailyBlightUnitFiles <- function(){
-  files <- list.files(pattern  =  '.txt$')
+  files <- list.files(pattern  =  ".txt$")
   for(i in files){
-    weather.data <- as.data.frame(read.csv(i, sep = '\t'))
-    colnames(weather.data) <- c('stationID', 'year', 'month', 'day', 'hour', 'temperature', 'relativeHumidity')
+    weather.data <- as.data.frame(read.csv(i, sep = "\t"))
+    colnames(weather.data) <- c("stationID", "year", "month", "day", "hour", "temperature", "relativeHumidity")
     blight.calcs <- DayR(weather.data = weather.data, max.year = 1995, min.year = 1990)
-    Date <- paste(blight.calcs$oYear, blight.calcs$oMonth, blight.calcs$oDay, sep = '-')
+    Date <- paste(blight.calcs$oYear, blight.calcs$oMonth, blight.calcs$oDay, sep = "-")
     weather.data <- cbind(Date, blight.calcs)
     weather.data <- subset(weather.data, oYear >= 1)
-    filename <- paste(i, 'moderately.susceptible.dayR', sep = '.')
-    write.table(weather.data, file = filename, sep = '\t', col.names = FALSE, eol = '\n', append = FALSE)
+    filename <- paste(i, "moderately.susceptible.dayR", sep = ".")
+    write.table(weather.data, file = filename, sep = "\t", col.names = FALSE, eol = "\n", append = FALSE)
   }
 }
 
@@ -77,7 +77,7 @@ DayR <- function(weather.data, min.year, max.year){
               tRH[1:12] <- tDay$relativeHumidity[13:24]
               if (iDay < maxDay){
                 tDay2 <- subset(t.month,day == iDay+1)}
-              #100201 - Was 'else if'????  Incorrect???
+              #100201 - Was "else if"????  Incorrect???
               if (i.month < 12){
                 t.month2 <- subset(tYear, month == i.month+1)
                 tDay2 <- subset(t.month2, day == 1)}
@@ -137,9 +137,9 @@ ConsR <- function(tRH, tC){
 }
 
 ## Blight Unit Calculation
-blightR = function(consmc, tcons, res = 'MS'){
+blightR = function(consmc, tcons, res = "MS"){
   blight.unit = 0*(1:12)
-  if (res == 'S'){
+  if (res == "S"){
     for(k in (1:12)){
       if (consmc[k]< = 27 & consmc[k]> = 3){
         if (consmc[k]> = 23 & consmc[k]< = 27){
@@ -174,7 +174,7 @@ blightR = function(consmc, tcons, res = 'MS'){
     
   }
   
-  if (res  ==  'MS'){
+  if (res  ==  "MS"){
     for(k in (1:12)){
       if (consmc[k]< = 27 & consmc[k]> = 3){
         if (consmc[k]> = 23 & consmc[k]< = 27){
@@ -204,7 +204,7 @@ blightR = function(consmc, tcons, res = 'MS'){
         }
       }
     }
-  } else if (res  ==  'R'){
+  } else if (res  ==  "R"){
     for(k in (1:12)){
       if (consmc[k]< = 27 & consmc[k]> = 3){
         if (consmc[k]> = 23 & consmc[k]< = 27){
