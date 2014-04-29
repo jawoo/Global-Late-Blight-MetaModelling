@@ -31,7 +31,7 @@ tmp <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566262) # 
 ## mean monthly precipitation #####
 download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz", tf)
 pre <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268) # use header, colClasses and nrows to speed input into R
-pre <- pre[, c(-15, -16, -17, -18, -19, -20, -21, -22, -23, -24, -25, -26)] # remove CVs of precip from table
+pre <- pre[, 1:14] # remove CV columns of precip from table
 
 #### calculate tmax and tmin from tmp and dtr (see: http://www.cru.uea.ac.uk/cru/data/hrg/tmc/readme.txt) #####
 tmx <- tmp[, c(3:14)]+(0.5*dtr[, c(3:14)])
