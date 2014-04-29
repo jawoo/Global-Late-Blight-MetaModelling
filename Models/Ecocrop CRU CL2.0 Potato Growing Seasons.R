@@ -34,10 +34,8 @@ pre <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268) # 
 pre <- pre[, 1:14] # remove CV columns of precip from table
 
 #### calculate tmax and tmin from tmp and dtr (see: http://www.cru.uea.ac.uk/cru/data/hrg/tmc/readme.txt) #####
-tmx <- tmp[, c(3:14)]+(0.5*dtr[, c(3:14)])
-tmx <- cbind(tmp[, 1:2], tmx)
-tmn <- tmp[, c(3:14)]-(0.5*dtr[, c(3:14)])
-tmn <- cbind(tmp[, c(1:2)], tmn)
+tmx <- cbind(tmp[, 1:2], tmp[, c(3:14)]+(0.5*dtr[, c(3:14)])) # cbind xy data from tmp with new tmx data
+tmn <- cbind(tmp[, 1:2], tmp[, c(3:14)]-(0.5*dtr[, c(3:14)])) # cbind xy data from tmp with new tmn data
 
 ##### column names and later layer names for raster stack objects ####
 months <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
@@ -68,7 +66,7 @@ tmp.stack <- create.stack(tmp, xy, wrld, months)
 #### Download MIRCA 2000 Maximum Harvested Area for Potato (Crop #10) to use as a mask ####
 url <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz"
 download.file(url, "Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
-system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz") #I don"t like to call 7zip here, but there"s something odd with the file and gnutar (thus untar) will not work
+system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz -oData") #I don"t like to call 7zip here, but there"s something odd with the file and gnutar (thus untar) will not work
 MIRCA <- raster("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC")
 MIRCA <- aggregate(MIRCA, 2) # Aggregate MIRCA up to 10sec data to match CRU CL2.0
 MIRCA[MIRCA==0] <- NA # Set 0 values to NA to use this as a mask
