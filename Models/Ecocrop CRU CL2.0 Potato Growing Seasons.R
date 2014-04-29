@@ -14,7 +14,7 @@ library(dismo)
 ##### End Libraries ####
 
 #### Load functions ####
-source ('../Functions/ecospat.R')
+source ("../Functions/ecospat.R")
 #### End Functions ####
 
 ##### Download and read CRU data files ####
@@ -40,7 +40,7 @@ tmn <- tmp[, c(3:14)]-(0.5*dtr[, c(3:14)])
 tmn <- cbind(tmp[, c(1:2)], tmn)
 
 ##### column names and later layer names for raster stack objects ####
-months <- c('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec')
+months <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
 
 ##### GIS work ####
 ## set up a raster object to use as the basis for converting CRU data to raster objects at 10 arc minute resolution ####
@@ -68,7 +68,7 @@ tmp.stack <- create.stack(tmp, xy, wrld, months)
 #### Download MIRCA 2000 Maximum Harvested Area for Potato (Crop #10) to use as a mask ####
 url <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz"
 download.file(url, "Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
-system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz") #I don't like to call 7zip here, but there's something odd with the file and gnutar (thus untar) will not work
+system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz") #I don"t like to call 7zip here, but there"s something odd with the file and gnutar (thus untar) will not work
 MIRCA <- raster("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC")
 MIRCA <- aggregate(MIRCA, 2) # Aggregate MIRCA up to 10sec data to match CRU CL2.0
 MIRCA[MIRCA==0] <- NA # Set 0 values to NA to use this as a mask
@@ -80,9 +80,9 @@ tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
 tmp.stack <- mask(tmp.stack, MIRCA)
 
-#### run ECOCROP model on raster stack of precipitation, tmin and tmax #####
+#### run ECOCROP model on raster stack of pre, tmp, tmn and tmx #####
 ## set parameters
-pot       <- getCrop('potato')
+pot       <- getCrop("potato")
 pot@RMIN  <- 125
 pot@ROPMN <- 250
 pot@ROPMX <- 350
@@ -90,21 +90,19 @@ pot@TMIN  <- 7
 pot@TOPMX <- 20
 pot@GMIN  <- pot@GMAX <- 100
 
-prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = 'Cache/Planting Seasons/CRUCL2.0_PRF.grd', overwrite = TRUE) # Rainfed potato
-pir <- ecospat(pot, tmn, tmx, tmp, pre, rainfed = FALSE, filename = 'Cache/Planting Seasons/CRUCL2.0_PIR.grd', overwrite = TRUE) # Irrigated potato
+## NOTE: These two lines are time intensive ##
+prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
+pir <- ecospat(pot, tmn, tmx, tmp, pre, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
-rfp <- raster(paste('tmp/poplant_a2', gcm, '_', timeslice, '_PRF.grd', sep = '')) # rainfed potato
+# Read raster object of predicted planting dates from disk
+rfp <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
 rfp <- reclassify(rfp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 
-irp <- raster(paste('tmp/poplant_a2', gcm, '_', timeslice, '_PIR.grd', sep = '')) # irrigated potato
+irp <- raster("Cache/Planting Seasons/CRUCL2.0_PIR.grd") # irrigated potato planting date raster
 irp <- reclassify(irp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 
-comb <- cover(rfp, irp)
-comb <- reclassify(comb, c(0, 0, NA), include.lowest = TRUE)
-
-poplant.mask <- raster('data/MIRCA_Poplant.grd') # Mask to remove non-potato areas
-poplant <- mask(comb, poplant.mask) # mask the non-potato growing areas from raster
-
-writeRaster(poplant, filename = paste('Cache/25APR14, '.grd', sep = ''), overwrite = TRUE)
+## Combine rainfed and irrigated potato planting dates, using irrigated values where rainfed not predicted by EcoCrop
+## save raster object to disk for later use with SimCastMeta
+comb <- cover(rfp, irp, filename = "Cache/CRU_CL20_Potato_Plant.grd", overwrite = TRUE))
 
 #eos
