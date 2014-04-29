@@ -29,7 +29,7 @@ ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
       }
       
       if(sum(is.na(clm)) == 0) {
-        e <- ecocrop(crop = 'potato', clm[, 1], clm[, 2], clm[, 3], rain = rainfed) 
+        e <- ecocrop(crop = "potato", clm[, 1], clm[, 2], clm[, 3], rain = rainfed) 
         v[i] <- e@maxper[1]
       }
     }
