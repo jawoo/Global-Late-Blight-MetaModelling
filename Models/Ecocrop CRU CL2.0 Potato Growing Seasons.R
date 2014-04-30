@@ -90,7 +90,7 @@ pot@GMIN  <- pot@GMAX <- 100
 
 ## NOTE: These two lines are time intensive ##
 prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
-pir <- ecospat(pot, tmn, tmx, tmp, pre, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
+pir <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
 # Read raster object of predicted planting dates from disk
 rfp <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
@@ -101,6 +101,6 @@ irp <- reclassify(irp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equ
 
 ## Combine rainfed and irrigated potato planting dates, using irrigated values where rainfed not predicted by EcoCrop
 ## save raster object to disk for later use with SimCastMeta
-comb <- cover(rfp, irp, filename = "Cache/CRU_CL20_Potato_Plant.grd", overwrite = TRUE))
+comb <- cover(rfp, irp, filename = "Cache/Planting Seasons/CRU_CL20_Potato_Plant.grd", overwrite = TRUE)
 
 #eos
