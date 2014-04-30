@@ -23,6 +23,7 @@ The study for which these models were developed can be found in [Sparks, A. H., 
 * **Functions** - Contains scripts with functions that are used across several scripts for sharing
       * ecospat.R - Function used to run the EcoCrop model to predict planting dates for use with SimCastMeta
 * **Models** - Contains the scripts for the models used in this project
-  * EcoCrop CRU CL2.0 Potato Growing Seasons.R - Downloads data from CRU and Uni Frankfurt to generate maps of potato planting dates, output files are found in "Cache/Planting Seasons"
+  * EcoCrop CRU CL2.0 Potato Growing Seasons.R - Downloads CRU CL2.0 data from CRU [New et al. 2000](http://www.cru.uea.ac.uk/cru/data/hrg/tmc/new_et_al_10minute_climate_CR.pdf)
+  and MIRCA2000 from Uni Frankfurt, MIRCA2000, [(Portman et al. 2000)](http://www2.uni-frankfurt.de/45218023/MIRCA?legacy_request=1), to generate maps of potato planting dates, output files are found in "Cache/Planting Seasons"
   * SimCast_Blight_Units.R - The blight unit portion of the SimCast model, as described in [Grünwald et al. 2002](http://grunwaldlab.cgrb.oregonstate.edu/potato-late-blight-management-toluca-valley-field-validation-simcast-modified-cultivars-high-field)
   * SimCastMeta.R - The metamodel, as described in [Sparks et al. 2011](http://www.esajournals.org/doi/pdf/10.1890/es11-00128.1)
