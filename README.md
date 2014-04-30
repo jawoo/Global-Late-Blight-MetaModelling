@@ -27,3 +27,7 @@ The study for which these models were developed can be found in [Sparks, A. H., 
   and MIRCA2000 from Uni Frankfurt, MIRCA2000, [(Portman et al. 2000)](http://www2.uni-frankfurt.de/45218023/MIRCA?legacy_request=1), to generate maps of potato planting dates, output files are found in "Cache/Planting Seasons"
   * SimCast_Blight_Units.R - The blight unit portion of the SimCast model, as described in [Grünwald et al. 2002](http://grunwaldlab.cgrb.oregonstate.edu/potato-late-blight-management-toluca-valley-field-validation-simcast-modified-cultivars-high-field)
   * SimCastMeta.R - The metamodel, as described in [Sparks et al. 2011](http://www.esajournals.org/doi/pdf/10.1890/es11-00128.1)
+
+Acknowledgements
+------------------------------
+We acknowledge the modeling groups, the Program for Climate Model Diagnosis and Intercomparison (PCMDI) and the WCRP Working Group on Coupled Modelling (WGCM) for their roles in making available the WCRP CMIP3 multi-model dataset. Support of this dataset is provided by the Office of Science, U.S. Department of Energy. We also appreciate support by the USAID through the International Potato Center (CIP), by NSF grant EF-0525712 as part of the joint NSF-NIH Ecology of Infectious Disease program, by NSF Grant DEB-0516046, by the USAID for the SANREM CRSP under terms of Cooperative Agreement Award No. EPP-A-00-04-00013-00 to the OIRED at Virginia Tech, by the CGIAR Research Programs Roots, Tubers and Bananas (RTB), and Climate Change, Agriculture and Food Security (CCAFS).
