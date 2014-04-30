@@ -92,7 +92,7 @@ pot@GMIN  <- pot@GMAX <- 100
 prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
 pir <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
-# Read raster object of predicted planting dates from disk
+# Read raster objects of predicted planting dates from disk
 rfp <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
 rfp <- reclassify(rfp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 
