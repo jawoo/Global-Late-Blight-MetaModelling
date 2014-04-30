@@ -27,54 +27,19 @@ library(dismo)
 ##### End Libraries ####
 
 #### Load functions ####
-source ("Functions/ecospat.R")
+source("Functions/ecospat.R")
+source("Functions/Get_CRU_20_Data.R")
+source("Functions/create_stack.R")
 #### End Functions ####
 
-##### Download and read CRU data files ####
-## create a temp file and directory for downloading files
-tf <- tempfile()
-## mean monthly diurnal temperature range ####
-download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_dtr.dat.gz", tf)
-dtr <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566262) # use header, colClasses and nrows to speed input into R
+# Function that downloads CRU mean temperature, diurnal temperature difference and precipitation data and converts into R dataframe objects, returns a list
+CRU.data <- CRU_DL() 
 
-## mean monthly temperature ####
-download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz", tf)
-tmp <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566262) # use header, colClasses and nrows to speed input into R
-
-## mean monthly precipitation #####
-download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz", tf)
-pre <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268) # use header, colClasses and nrows to speed input into R
-pre <- pre[, 1:14] # remove CV columns of precip from table
-
-#### calculate tmax and tmin from tmp and dtr (see: http://www.cru.uea.ac.uk/cru/data/hrg/tmc/readme.txt) #####
-tmx <- cbind(tmp[, 1:2], tmp[, c(3:14)]+(0.5*dtr[, c(3:14)])) # cbind xy data from tmp with new tmx data
-tmn <- cbind(tmp[, 1:2], tmp[, c(3:14)]-(0.5*dtr[, c(3:14)])) # cbind xy data from tmp with new tmn data
-
-##### column names and later layer names for raster stack objects ####
-months <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
-
-##### GIS work ####
-## set up a raster object to use as the basis for converting CRU data to raster objects at 10 arc minute resolution ####
-wrld <- raster(nrows = 900, ncols = 2160, ymn = -60, ymx = 90, xmn = -180, xmx = 180)
-
-## Create raster objects using cellFromXY and generate a raster stack
-## create.stack takes pre, tmp, tmn and tmx and creates a raster object stack of 12 month data
-create.stack <- function(wvar, xy, wrld, months){ 
-  x <- wrld
-  cells <- cellFromXY(x, wvar[, c(2, 1)])
-  for(i in 3:14){
-    x[cells] <- wvar[, i]
-    if(i == 3){y <- x} else y <- stack(y, x)
-  }
-  names(y) <- months
-  return(y)
-  rm(x)
-}
-
-pre.stack <- create.stack(pre, xy, wrld, months)
-tmn.stack <- create.stack(tmn, xy, wrld, months)
-tmx.stack <- create.stack(tmx, xy, wrld, months)
-tmp.stack <- create.stack(tmp, xy, wrld, months)
+## Function that generates raster stacks of the CRU CL2.0 data
+pre.stack <- create.stack(CRU.data$pre)
+tmn.stack <- create.stack(CRU.data$tmn)
+tmp.stack <- create.stack(CRU.data$tmp)
+tmx.stack <- create.stack(CRU.data$tmx)
 
 #### Download MIRCA 2000 Maximum Harvested Area for Potato (Crop #10) to use as a mask ####
 url <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz"
