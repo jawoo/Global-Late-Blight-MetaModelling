@@ -21,6 +21,21 @@
 #                 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##############################################################################
 
+#### Libraries ####
+library(raster)
+#### End Libraries ####
+
+#### Load functions ####
+source("Functions/Get_CRU_20_Data.R")
+source("Functions/create_stack.R")
+#### End Functions ####
+
+# Function that downloads CRU mean temperature, diurnal temperature difference and precipitation data and converts into R dataframe objects, returns a list
+CRU.data <- CRU_SimCastMeta_Data_DL
+
+## Function that generates raster stacks of the CRU CL2.0 data
+reh.stack <- create.stack(CRU.data$reh)
+tmp.stack <- create.stack(CRU.data$tmp)
 
 
 #eos

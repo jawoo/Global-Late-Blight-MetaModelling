@@ -33,7 +33,7 @@ source("Functions/create_stack.R")
 #### End Functions ####
 
 # Function that downloads CRU mean temperature, diurnal temperature difference and precipitation data and converts into R dataframe objects, returns a list
-CRU.data <- CRU_DL() 
+CRU.data <- CRU_Growing_Season_DL() 
 
 ## Function that generates raster stacks of the CRU CL2.0 data
 pre.stack <- create.stack(CRU.data$pre)
