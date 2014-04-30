@@ -5,7 +5,7 @@
 # last update   : in Los Baños, Laguna, April 2014;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : PotatoPlant_CRUCL2.0.grd, CRUCL2.0_PRF.grd, CRUCL2.0_PIR.grd;
-# remarks 1     : Download the CRU CL 2.0 Data here: http://www.cru.uea.ac.uk/cru/data/hrg/timm/grid/CRU_TS_2_0.html;
+# remarks 1     : ;
 # Licence:      : This program is free software; you can redistribute it and/or modify
 #                 it under the terms of the GNU General Public License as published by
 #                 the Free Software Foundation; either version 2 of the License, or
