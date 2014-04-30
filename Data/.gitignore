@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 # Ignore everything in this directory
 *
 # Except this file
+=======
+*
+
+>>>>>>> gh-pages
 !.gitignore
 
