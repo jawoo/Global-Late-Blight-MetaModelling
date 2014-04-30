@@ -1,6 +1,7 @@
 Global-Late-Blight-Modelling
 ============================
 
+<<<<<<< HEAD
 This repository hosts R Scripts and the data necessary for creating metamodels of blight units based on the SimCast model modified by [Grünwald et al. (2002)](http://grunwaldlab.cgrb.oregonstate.edu/potato-late-blight-management-toluca-valley-field-validation-simcast-modified-cultivars-high-field). Other scripts include tools to predict growing seasons using Ecocrop and estimating global late blight severity using monthly time-step weather data to generate maps of potato late blight risk.
 
 The metamodelling approach can be found in, [Sparks, A. H., Forbes, G. A., Hijmans, R. J., & Garrett, K. A. (2011). A metamodeling framework for extending the application domain of process-based ecological models. Ecosphere, 2(8), art90. doi:10.1890/ES11-00128.1](http://www.esajournals.org/doi/pdf/10.1890/es11-00128.1).
@@ -34,3 +35,8 @@ Acknowledgements
 
 We acknowledge the modeling groups, the Program for Climate Model Diagnosis and Intercomparison (PCMDI) and the WCRP Working Group on Coupled Modelling (WGCM) for their roles in making available the WCRP CMIP3 multi-model dataset. Support of this dataset is provided by the Office of Science, U.S. Department of Energy. We also appreciate support by the USAID through the International Potato Center (CIP), by NSF grant EF-0525712 as part of the joint NSF-NIH Ecology of Infectious Disease program, by NSF Grant DEB-0516046, by the USAID for the SANREM CRSP under terms of Cooperative Agreement Award No. EPP-A-00-04-00013-00 to the OIRED at Virginia Tech, by the CGIAR Research Programs Roots, Tubers and Bananas (RTB), and Climate Change, Agriculture and Food Security (CCAFS).
 
+=======
+R Scripts and supporting data for creating metamodels,  as published in Ecosphere, and using them to generate global estimates of potato late blight risk based on climate data as published in Global Change Biology.
+
+This branch exists for the website: http://adamhsparks.github.io/Global-Late-Blight-Modelling/
+>>>>>>> gh-pages
