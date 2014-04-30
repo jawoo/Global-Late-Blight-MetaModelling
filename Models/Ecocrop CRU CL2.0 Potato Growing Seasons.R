@@ -32,8 +32,10 @@ source("Functions/Get_CRU_20_Data.R")
 source("Functions/create_stack.R")
 #### End Functions ####
 
-# Function that downloads CRU mean temperature, diurnal temperature difference and precipitation data and converts into R dataframe objects, returns a list
-CRU.data <- CRU_Growing_Season_DL() 
+#### Begin data import ####
+source("Functions/DownloadMIRCA.R") # Script will download and unzip MIRCA data or simply load if available in /Data
+CRU.data <- CRU_Growing_Season_DL() # Function that downloads CRU mean temperature, diurnal temperature difference and precipitation data and converts into R dataframe objects, returns a list
+#### End data import ####
 
 ## Function that generates raster stacks of the CRU CL2.0 data
 pre.stack <- create.stack(CRU.data$pre)
@@ -41,14 +43,7 @@ tmn.stack <- create.stack(CRU.data$tmn)
 tmp.stack <- create.stack(CRU.data$tmp)
 tmx.stack <- create.stack(CRU.data$tmx)
 
-#### Download MIRCA 2000 Maximum Harvested Area for Potato (Crop #10) to use as a mask ####
-url <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz"
-download.file(url, "Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
-system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz -oData") #I don"t like to call 7zip here, but there"s something odd with the file and gnutar (thus untar) will not work
-MIRCA <- raster("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC")
-MIRCA <- aggregate(MIRCA, 2) # Aggregate MIRCA up to 10sec data to match CRU CL2.0
-MIRCA[MIRCA==0] <- NA # Set 0 values to NA to use this as a mask
-MIRCA <- crop(MIRCA, pre.stack)
+MIRCA <- crop(MIRCA, pre.stack) # Crop the MIRCA data to the same extent as the CRU data
 
 #### Mask the CRU CL2.0 stacks with MIRCA to reduce the run time of ECOCROP ####
 pre.stack <- mask(pre.stack, MIRCA)
@@ -79,6 +74,6 @@ irp <- reclassify(irp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equ
 
 ## Combine rainfed and irrigated potato planting dates, using irrigated values where rainfed not predicted by EcoCrop
 ## save raster object to disk for later use with SimCastMeta
-comb <- cover(rfp, irp, filename = "Cache/Planting Seasons/CRU_CL20_Potato_Plant.grd", overwrite = TRUE)
+poplant <- cover(rfp, irp, filename = "Cache/Planting Seasons/CRU_CL20_Potato_Plant.grd", overwrite = TRUE)
 
 #eos
