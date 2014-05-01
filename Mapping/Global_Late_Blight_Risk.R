@@ -36,7 +36,7 @@ source("Functions/create_stack.R")
 #### Begin data import ####
 if(file.exists("Cache/Planting Seasons/CRU_CL20_Potato_Plant.grd") != TRUE){
   source("Models/Ecocrop CRU CL2.0 Potato Growing Seasons.R")} else
-    poplant <- raster("Cache/Planting Seasons/CRU_CL20_Potato_Plant.grd")
+    poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd")
 
 ## Load blight units calculated by SimCast, used to create the SimCastMeta GAM ####
 #!!!!! Select ONLY ONE, resistant or susceptible blight units for the model run !!!!!#
