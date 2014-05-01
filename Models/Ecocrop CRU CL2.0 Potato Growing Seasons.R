@@ -66,7 +66,7 @@ prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, 
 
 # Read raster objects of predicted planting dates from disk
 poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
-poplant <- reclassify(rfp, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
+poplant <- reclassify(poplant, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 writeRaster(poplant, "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE)
 
 #eos
