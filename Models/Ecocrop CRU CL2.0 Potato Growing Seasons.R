@@ -52,16 +52,8 @@ tmx.stack <- mask(tmx.stack, MIRCA)
 tmp.stack <- mask(tmp.stack, MIRCA)
 
 #### run ECOCROP model on raster stack of pre, tmp, tmn and tmx #####
-## set parameters
-pot       <- getCrop("potato")
-pot@RMIN  <- 125
-pot@ROPMN <- 250
-pot@ROPMX <- 350
-pot@TMIN  <- 7
-pot@TOPMX <- 20
-pot@GMIN  <- pot@GMAX <- 100
 
-## NOTE: These two lines are time intensive ##
+## NOTE: These this next line is time intensive ##
 prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
 
 # Read raster objects of predicted planting dates from disk

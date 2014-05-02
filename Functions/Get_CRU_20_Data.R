@@ -22,7 +22,7 @@
 ##############################################################################
 
 ##### Download and read CRU data files ####
-CRU_Growing_Season_Data_DL <- function(){
+CRU_Growing_Season_DL <- function(){
   ## create a temp file and directory for downloading files
   tf <- tempfile()
   ## mean monthly diurnal temperature range ####
