@@ -34,7 +34,7 @@ source("Functions/create_stack.R")
 #### End Functions ####
 
 #### Begin data import ####
-if(file.exists("Cache/Planting Seasons/CRU_CL20_Potato_Plant.grd") != TRUE){
+if(file.exists("Cache/Planting Seasons/CRUCL2.0_PRF.grd") != TRUE){
   source("Models/Ecocrop CRU CL2.0 Potato Growing Seasons.R")} else
     poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd")
 
