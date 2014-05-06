@@ -51,13 +51,24 @@ tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
 tmp.stack <- mask(tmp.stack, MIRCA)
 
+pot       <- getCrop('potato')
+pot@RMIN  <- 125
+pot@ROPMN <- 250
+pot@ROPMX <- 350
+pot@TMIN  <- 7
+pot@TOPMX <- 20
+pot@GMIN  <- pot@GMAX <- 100
+
 #### run ECOCROP model on raster stack of pre, tmp, tmn and tmx #####
 ## NOTE: line is time intensive ##
 prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
+pir <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
 # Read raster objects of predicted planting dates from disk
 poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
 poplant <- reclassify(poplant, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 writeRaster(poplant, "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE)
+
+poplant.pir <- raster("Cache/Planting Seasons/CRUCL2.0_PIR.grd")
 
 #eos
