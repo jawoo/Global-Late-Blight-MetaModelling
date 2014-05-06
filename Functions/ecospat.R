@@ -21,7 +21,10 @@
 #                 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ##############################################################################
 
-ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
+ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename = "", ...) {
+  if (class(crop) == "character") { crop <- ecocropCrop(crop) }
+  if (class(crop) != "ECOCROPcrop") { stop("crop is of wrong class") }
+  
   filename  <- trim(filename)
   outr      <- raster(tmp)
   v         <- vector(length = ncol(outr))
