@@ -2,29 +2,14 @@
 # title         : ecospat.R;
 # purpose       : function to run the ecocrop model using a raster stack;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Los Baños, April 2014;
-# inputs        : na;
+# last update   : in Los Baños, May 2014;
+# inputs        : raster stacks of avg/min/max temperature, precipitation;
 # outputs       : na;
 # remarks 1     : ;
-# Licence:      : This program is free software; you can redistribute it and/or modify
-#                 it under the terms of the GNU General Public License as published by
-#                 the Free Software Foundation; either version 2 of the License, or
-#                 (at your option) any later version.
-
-#                 This program is distributed in the hope that it will be useful,
-#                 but WITHOUT ANY WARRANTY; without even the implied warranty of
-#                 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#                 GNU General Public License for more details.
-
-#                 You should have received a copy of the GNU General Public License along
-#                 with this program; if not, write to the Free Software Foundation, Inc.,
-#                 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# Licence:      : GPL3;
 ##############################################################################
 
-ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename = "", ...) {
-  if (class(crop) == "character") { crop <- ecocropCrop(crop) }
-  if (class(crop) != "ECOCROPcrop") { stop("crop is of wrong class") }
-  
+ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
   filename  <- trim(filename)
   outr      <- raster(tmp)
   v         <- vector(length = ncol(outr))

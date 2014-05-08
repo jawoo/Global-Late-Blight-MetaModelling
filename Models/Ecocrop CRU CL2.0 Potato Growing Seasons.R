@@ -6,19 +6,7 @@
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : PotatoPlant_CRUCL2.0.grd, CRUCL2.0_PRF.grd, CRUCL2.0_PIR.grd;
 # remarks 1     : ;
-# Licence:      : This program is free software; you can redistribute it and/or modify
-#                 it under the terms of the GNU General Public License as published by
-#                 the Free Software Foundation; either version 2 of the License, or
-#                 (at your option) any later version.
-
-#                 This program is distributed in the hope that it will be useful,
-#                 but WITHOUT ANY WARRANTY; without even the implied warranty of
-#                 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#                 GNU General Public License for more details.
-
-#                 You should have received a copy of the GNU General Public License along
-#                 with this program; if not, write to the Free Software Foundation, Inc.,
-#                 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# Licence:      : GPL3;
 ##############################################################################
 
 #### Libraries ####
@@ -51,7 +39,7 @@ tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
 tmp.stack <- mask(tmp.stack, MIRCA)
 
-pot       <- getCrop("potato")
+pot       <- getCrop('potato')
 pot@RMIN  <- 125
 pot@ROPMN <- 250
 pot@ROPMX <- 350
@@ -64,12 +52,17 @@ pot@GMIN  <- pot@GMAX <- 100
 prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
 pir <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
-rfp <- reclassify(prf, c(0, 0, NA))
-comb <- cover(prf, pir)  # use rainfed, except where NA
-comb <- reclassify(comb, c(0, 0, NA))
-com <- focal(comb, fun = modal, w = matrix(1, 3, 3), NAonly = TRUE, progress = 'text') # take neighborhood values where NA
-com <- focal(comb, fun = modal, w = matrix(1, 3, 3), NAonly = TRUE, progress = 'text') # once more
+# Read raster objects of predicted planting dates from disk
+poplant.prf <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
+poplant.prf <- reclassify(poplant.prf, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
+writeRaster(poplant, "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE)
 
-writeRaster(com, filename = "Cache/Planting Seasons/CRUCL2.0_Combined.grd")
+poplant.pir <- raster("Cache/Planting Seasons/CRUCL2.0_PIR.grd")
+
+comb <- cover(poplant.prf, poplant.pir)  # use rainfed, except where NA
+comb <- reclassify(comb, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
+
+com <- focal(comb, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE) # take neighborhood values where NA
+com <- focal(com, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_Combined.grd", overwrite = TRUE) # once again
 
 #eos
