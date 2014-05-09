@@ -30,3 +30,5 @@ create.stack <- function(wvar){
   return(y)
   rm(x)
 }
+
+#eos

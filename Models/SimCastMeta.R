@@ -23,7 +23,7 @@ require("rgl")
 ##### Begin data import #####
 ## Read the data table of daily blight unit values as generated in SimCast_Blight_Units.R
 
-##!!!!!!!!!! Use only ONE of the following tables !!!!!!!!!!##
+##!!!!!!!!!! Use only ONE of the following tables at a time !!!!!!!!!!##
 
 ##### Data for daily models #####
 ## Create a SUSCEPTIBLE model with this data for daily weather data
