@@ -98,6 +98,7 @@ p <- p + geom_boxplot(outlier.shape = NA) +
   scale_x_continuous("Blight Units Predicted by SimCast") + 
   scale_y_continuous("Blight Units Predicted by SimCast_Meta")
 
+# display the graph
 p
 
 ##### End graphing section #####
