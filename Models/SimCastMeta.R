@@ -52,10 +52,10 @@ testing.data <- subset(blight.units, Year >= 1993)
 ##### End data management #####
 
 ###### Begin model creation and testing #####
-## A k of 125 generated the most biologically believable model with the daily data we used based on GCV score 
+## A k of 150 generated the most biologically believable model with the daily data we used based on GCV score 
 ## higher values indicate a "better fitting" model, but an examination of the 3D surface indicates otherwise
 
-## A k of 165 generated the best fit for the monthly weather data
+## A k of 150 was selected in the original Ecosphere paper
 ## for more information, ?gam
 gam.predict <- gam(Blight~s(C, RH, k = 125), data = construction.data)
 summary(gam.predict)
