@@ -48,7 +48,7 @@ pot@TOPMX <- 20
 pot@GMIN  <- pot@GMAX <- 100
 
 #### run ECOCROP model on raster stack of pre, tmp, tmn and tmx #####
-## NOTE: line is time intensive ##
+## NOTE: the ecospat() function is time intensive ##
 prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
 pir <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
