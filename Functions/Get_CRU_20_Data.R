@@ -6,7 +6,7 @@
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : ;
 # remarks 1     : a standalone version exists as a gist here: https://gist.github.com/adamhsparks/11284393;
-# Licence:      : GPL3;
+# Licence:      : GPL2;
 ##############################################################################
 
 ##### Download and read CRU data files ####

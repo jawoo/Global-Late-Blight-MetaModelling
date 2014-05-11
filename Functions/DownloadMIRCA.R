@@ -6,7 +6,7 @@
 # inputs        : MIRCA Potato Harvest Area ESRI ASC gzipped file;
 # outputs       : MIRCA Potato Harvest Area ESRI ASC file;
 # remarks       : ;
-# Licence:      : GPL3;
+# Licence:      : GPL2;
 ##############################################################################
 
 #### Download MIRCA 2000 Maximum Harvested Area for Potato (Crop #10) to use as a mask ####

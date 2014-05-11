@@ -13,7 +13,7 @@
 # remarks 3     : this model does not attempt to recreate the entire SimCast model, only the blight unit portion
 #                 the fungicide unit portion is not a part of this script and was not written in R;
 # remarks 4     : blight units calculated using this script are used in the creation of the SimCastMeta model;
-# license       : GPL3;
+# license       : GPL2;
 ##############################################################################
 
 # select working directory where weather data is located

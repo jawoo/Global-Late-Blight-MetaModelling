@@ -6,7 +6,7 @@
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : PotatoPlant_CRUCL2.0.grd, CRUCL2.0_PRF.grd, CRUCL2.0_PIR.grd;
 # remarks 1     : ;
-# Licence:      : GPL3;
+# Licence:      : GPL2;
 ##############################################################################
 
 #### Libraries ####
@@ -21,8 +21,9 @@ source("Functions/create_stack.R")
 #### End Functions ####
 
 #### Begin data import ####
+CRU.data <- CRU_Growing_Season_DL() # Function that downloads CRU mean temperature, diurnal temperature difference and;
+                                    # precipitation data and converts into R dataframe objects, returns a list
 source("Functions/DownloadMIRCA.R") # Script will download and unzip MIRCA data or simply load if available in /Data
-CRU.data <- CRU_Growing_Season_DL() # Function that downloads CRU mean temperature, diurnal temperature difference and precipitation data and converts into R dataframe objects, returns a list
 #### End data import ####
 
 ## Function that generates raster stacks of the CRU CL2.0 data
@@ -33,7 +34,7 @@ tmx.stack <- create.stack(CRU.data$tmx)
 
 MIRCA <- crop(MIRCA, pre.stack) # Crop the MIRCA data to the same extent as the CRU data
 
-#### Mask the CRU CL2.0 stacks with MIRCA to reduce the run time of ECOCROP ####
+#### Mask the CRU CL2.0 stacks with MIRCA to reduce the run time of EcoCrop ####
 pre.stack <- mask(pre.stack, MIRCA)
 tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)

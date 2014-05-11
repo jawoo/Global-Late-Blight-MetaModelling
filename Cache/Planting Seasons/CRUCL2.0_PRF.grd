@@ -1,14 +1,14 @@
 [general] 
 creator=R package 'raster' 
-created= 2014-05-08 17:26:56 
+created= 2014-05-10 04:37:04 
 [georeference] 
 nrows= 900 
 ncols= 2160 
 xmin= -180 
 ymin= -60 
 xmax= 180 
-ymax= 90 
-projection= +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
+ymax= 89.99999 
+projection= +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0 
 [data] 
 datatype= FLT8S 
 byteorder= little 
@@ -23,4 +23,4 @@ legendtype=
 values=  
 color=  
 [description] 
-layername= layer 
+layername= cu1975_planting 

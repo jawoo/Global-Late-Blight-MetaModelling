@@ -8,7 +8,7 @@
 # remarks 1     : EcoCrop CRU CL2.0 Potato Growing Seasons.R must be run to generate the planting
 #                 date raster before this script is used. If it is not, the EcoCrop planting date
 #                 script will automatically run and generate the necessary file;
-# Licence:      : GPL3;
+# Licence:      : GPL2;
 ##############################################################################
 
 #### Libraries ####
@@ -54,7 +54,8 @@ CRU.data <- CRU_SimCastMeta_Data_DL()
 reh.stack <- create.stack(CRU.data$reh)
 tmp.stack <- create.stack(CRU.data$tmp)
 
-#### Mask the CRU CL2.0 stacks with poplant raster (already masked using MIRCA production areas) to reduce the run time of SimCastMeta ####
+#### Mask the CRU CL2.0 stacks with poplant raster (already masked using MIRCA production areas in EcoCrop script);
+#### to reduce the run time of SimCastMeta ####
 reh.stack <- mask(reh.stack, poplant)
 tmp.stack <- mask(tmp.stack, poplant)
 
