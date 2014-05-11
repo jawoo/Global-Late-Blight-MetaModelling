@@ -32,6 +32,7 @@ CRU_Growing_Season_DL <- function(){
   
   vars <- list(pre, tmn, tmp, tmx)
   names(vars) <- c('pre', 'tmn', 'tmp', 'tmx')
+  rm(tf)
   return(vars)
 }
 
@@ -50,6 +51,7 @@ CRU_SimCastMeta_Data_DL <- function(){
   
   vars <- list(reh, tmp)
   names(vars) <- c('reh', 'tmp')
+  rm(tf)
   return(vars)
 }
 
