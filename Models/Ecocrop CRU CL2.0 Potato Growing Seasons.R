@@ -74,5 +74,7 @@ com <- focal(com, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE)
 #### Finally, clean up the planting date map again with MIRCA to remove non-potato growing areas, then save to disk ####
 com <- mask(com, MIRCA)
 writeRaster(com, "Cache/Planting Seasons/CRUCL2.0_Combined.grd", overwrite = TRUE)
+plot(com, main = "Potato planting dates by first month\nas predicted by EcoCrop", xlab = "Longitude", ylab = "Latitude",
+     legend.args = list(text = "Month", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos
