@@ -102,6 +102,7 @@ for(j in 1:12){
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
 
-plot(global.blight.risk)
+plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer 120d Growing Season", xlab = "Longitude", ylab = "Latitude",
+     legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos

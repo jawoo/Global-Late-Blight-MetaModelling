@@ -2,7 +2,7 @@
 # title         : EcoCrop CRU CL2.0 Potato Growing Seasons.R;
 # purpose       : create global potato growing seasons using Ecocrop with CRU CL 2.0 data;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, May 2014;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : PotatoPlant_CRUCL2.0.grd, CRUCL2.0_PRF.grd, CRUCL2.0_PIR.grd;
 # remarks 1     : ;

@@ -2,7 +2,7 @@
 # title         : SimCastMeta.R;
 # purpose       : Create a SimCastMeta GAM model for a daily or monthly time-step;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, May 2014;
 # inputs        : blight unit values as calculated in SimCast_Blight_Units.R;
 # outputs       : GAM suitable for predicting late blight risk using daily T and RH data
 #                 graphs illustrating fit of the model;
@@ -57,7 +57,7 @@ testing.data <- subset(blight.units, Year >= 1993)
 
 ## A k of 150 was selected in the original Ecosphere paper
 ## for more information, ?gam
-gam.predict <- gam(Blight~s(C, RH, k = 125), data = construction.data)
+gam.predict <- gam(Blight~s(C, RH, k = 150), data = construction.data)
 summary(gam.predict)
 
 ## Test the model
