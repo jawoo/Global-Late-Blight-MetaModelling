@@ -38,13 +38,13 @@ if(file.exists("Data/MIRCA_Poplant.grd") != TRUE){
   perc.Area <- perc.r.IRC+perc.r.RFC # combine the rainfed and irrigated percentages, EcoCrop predicts both.
   
   perc.Area[perc.Area <= 0] <- NA #reclassify anything below 0% area to NA
-  perc.Area <- crop(perc.Area, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
-  writeRaster(perc.Area, 'Data/MIRCA_Poplant.grd', overwrite = TRUE)
+  MIRCA <- crop(perc.Area, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
+  writeRaster(MIRCA, 'Data/MIRCA_Poplant.grd', overwrite = TRUE)
   
   file.remove("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz")
   file.remove("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
   file.remove("Data/cell_area_ha_05mn.asc.gz")
-  
+
 } else # The file already exists and we save time by just reading into R
   MIRCA <- raster("Data/MIRCA_Poplant.grd")
 
