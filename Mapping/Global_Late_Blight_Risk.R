@@ -8,19 +8,7 @@
 # remarks 1     : EcoCrop CRU CL2.0 Potato Growing Seasons.R must be run to generate the planting
 #                 date raster before this script is used. If it is not, the EcoCrop planting date
 #                 script will automatically run and generate the necessary file;
-# Licence:      : This program is free software; you can redistribute it and/or modify
-#                 it under the terms of the GNU General Public License as published by
-#                 the Free Software Foundation; either version 2 of the License, or
-#                 (at your option) any later version.
-
-#                 This program is distributed in the hope that it will be useful,
-#                 but WITHOUT ANY WARRANTY; without even the implied warranty of
-#                 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#                 GNU General Public License for more details.
-
-#                 You should have received a copy of the GNU General Public License along
-#                 with this program; if not, write to the Free Software Foundation, Inc.,
-#                 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# Licence:      : GPL2;
 ##############################################################################
 
 #### Libraries ####
@@ -57,7 +45,7 @@ model.data <- subset(blight.units, Year <= 1992)
 ###### Begin model creation and testing #####
 ## A k of 165 generated the best fit for the monthly weather data
 ## for more information, ?gam
-SimCastMeta <- gam(Blight~s(C, RH, k = 165), data = model.data)
+SimCastMeta <- gam(Blight~s(C, RH, k = 150), data = model.data)
 
 # Function that downloads CRU mean temperature and relative humidity data and converts into R dataframe objects, returns a list
 CRU.data <- CRU_SimCastMeta_Data_DL()
@@ -66,7 +54,8 @@ CRU.data <- CRU_SimCastMeta_Data_DL()
 reh.stack <- create.stack(CRU.data$reh)
 tmp.stack <- create.stack(CRU.data$tmp)
 
-#### Mask the CRU CL2.0 stacks with poplant raster (already masked using MIRCA production areas) to reduce the run time of SimCastMeta ####
+#### Mask the CRU CL2.0 stacks with poplant raster (already masked using MIRCA production areas in EcoCrop script);
+#### to reduce the run time of SimCastMeta ####
 reh.stack <- mask(reh.stack, poplant)
 tmp.stack <- mask(tmp.stack, poplant)
 
@@ -113,6 +102,7 @@ for(j in 1:12){
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
 
-plot(global.blight.risk)
+plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer 120d Growing Season", xlab = "Longitude", ylab = "Latitude",
+     legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos

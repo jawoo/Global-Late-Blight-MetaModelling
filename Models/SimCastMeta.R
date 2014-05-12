@@ -2,7 +2,7 @@
 # title         : SimCastMeta.R;
 # purpose       : Create a SimCastMeta GAM model for a daily or monthly time-step;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, May 2014;
 # inputs        : blight unit values as calculated in SimCast_Blight_Units.R;
 # outputs       : GAM suitable for predicting late blight risk using daily T and RH data
 #                 graphs illustrating fit of the model;
@@ -10,19 +10,7 @@
 #                 Sparks, A. H., Forbes, G. A., Hijmans, R. J., & Garrett, K. A. (2011). 
 #                 A metamodeling framework for extending the application domain of process-based 
 #                 ecological models. Ecosphere, 2(8), art90. doi:10.1890/ES11-00128.1
-# Licence:      : This program is free software; you can redistribute it and/or modify
-#                 it under the terms of the GNU General Public License as published by
-#                 the Free Software Foundation; either version 2 of the License, or
-#                 (at your option) any later version.
-
-#                 This program is distributed in the hope that it will be useful,
-#                 but WITHOUT ANY WARRANTY; without even the implied warranty of
-#                 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#                 GNU General Public License for more details.
-
-#                 You should have received a copy of the GNU General Public License along
-#                 with this program; if not, write to the Free Software Foundation, Inc.,
-#                 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+# Licence:      : GPL2;
 ##############################################################################
 
 ###### Libraries #####
@@ -35,7 +23,7 @@ require("rgl")
 ##### Begin data import #####
 ## Read the data table of daily blight unit values as generated in SimCast_Blight_Units.R
 
-##!!!!!!!!!! Use only ONE of the following tables !!!!!!!!!!##
+##!!!!!!!!!! Use only ONE of the following tables at a time !!!!!!!!!!##
 
 ##### Data for daily models #####
 ## Create a SUSCEPTIBLE model with this data for daily weather data
@@ -64,12 +52,12 @@ testing.data <- subset(blight.units, Year >= 1993)
 ##### End data management #####
 
 ###### Begin model creation and testing #####
-## A k of 125 generated the most biologically believable model with the daily data we used based on GCV score 
+## A k of 150 generated the most biologically believable model with the daily data we used based on GCV score 
 ## higher values indicate a "better fitting" model, but an examination of the 3D surface indicates otherwise
 
-## A k of 165 generated the best fit for the monthly weather data
+## A k of 150 was selected in the original Ecosphere paper
 ## for more information, ?gam
-gam.predict <- gam(Blight~s(C, RH, k = 125), data = construction.data)
+gam.predict <- gam(Blight~s(C, RH, k = 150), data = construction.data)
 summary(gam.predict)
 
 ## Test the model
@@ -110,6 +98,7 @@ p <- p + geom_boxplot(outlier.shape = NA) +
   scale_x_continuous("Blight Units Predicted by SimCast") + 
   scale_y_continuous("Blight Units Predicted by SimCast_Meta")
 
+# display the graph
 p
 
 ##### End graphing section #####

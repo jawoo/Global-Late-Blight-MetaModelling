@@ -6,7 +6,7 @@
 # inputs        : raster stacks of avg/min/max temperature, precipitation;
 # outputs       : na;
 # remarks 1     : ;
-# Licence:      : GPL3;
+# Licence:      : GPL2;
 ##############################################################################
 
 ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
