@@ -25,27 +25,28 @@ if(file.exists("Data/MIRCA_Poplant.grd") != TRUE){
   system("7z e Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz -oData") 
   system("7z e Data/cell_area_ha_05mn.asc.gz -oData")
   
-  r.IRC <- raster("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC")
+  r.IRC <- raster("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC") # read the unzip ascii file using raster
   r.RFC <- raster("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC")
   r.Area <- raster("Data/cell_area_ha_05mn.asc")
   
-  r.IRC <- aggregate(r.IRC, 2)
+  r.IRC <- aggregate(r.IRC, 2) # aggregate from 5 minutes to 10 minutes to match the CRU CL2.0 data resolution
   r.RFC <- aggregate(r.RFC, 2)
   r.Area <- aggregate(r.Area, 2)
   
-  perc.r.IRC <- r.IRC/r.Area
-  perc.r.RFC <- r.RFC/r.Area
-  perc.Area <- perc.r.IRC+perc.r.RFC
+  perc.r.IRC <- r.IRC/r.Area # calculate the percent area in cell that is irrigated potato
+  perc.r.RFC <- r.RFC/r.Area # calculate the percent area in cell that is rainfed potato
+  perc.Area <- perc.r.IRC+perc.r.RFC # combine the rainfed and irrigated percentages, EcoCrop predicted both.
   
   #reclassify anything below X% area to NA
   perc.Area[perc.Area <= 0] <- NA
+  perc.Area <- crop(perc.Area, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
   writeRaster(perc.Area, 'Data/MIRCA_Poplant.grd', overwrite = TRUE)
   
   file.remove("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz")
   file.remove("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
   file.remove("Data/cell_area_ha_05mn.asc.gz")
   
-} else
+} else # The file already exists and we save time by just reading into R
   MIRCA <- raster("Data/MIRCA_Poplant.grd")
 
 #eos

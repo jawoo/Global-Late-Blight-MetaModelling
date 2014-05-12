@@ -32,8 +32,6 @@ tmn.stack <- create.stack(CRU.data$tmn)
 tmp.stack <- create.stack(CRU.data$tmp)
 tmx.stack <- create.stack(CRU.data$tmx)
 
-MIRCA <- crop(MIRCA, pre.stack) # Crop the MIRCA data to the same extent as the CRU data
-
 #### Mask the CRU CL2.0 stacks with MIRCA to reduce the run time of EcoCrop ####
 # Also, removes areas where potato is not grown. EcoCrop will predict potato growth nearly anywhere, with irrigation
 pre.stack <- mask(pre.stack, MIRCA)
