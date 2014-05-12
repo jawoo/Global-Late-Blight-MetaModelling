@@ -2,7 +2,7 @@
 # title         : Global_Late_Blight_Risk.R;
 # purpose       : create global potato late blight risk using SimCastMeta with CRU CL 2.0 data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, May 2014;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : ;
 # remarks 1     : EcoCrop CRU CL2.0 Potato Growing Seasons.R must be run to generate the planting
@@ -43,7 +43,7 @@ blight.units <- read.table("Cache/Blight Units/all.monthly.resistant.calcs.txt",
 model.data <- subset(blight.units, Year <= 1992)
 
 ###### Begin model creation and testing #####
-## A k of 165 generated the best fit for the monthly weather data
+## A k of 150 generated the best fit for the monthly weather data and most believable GAM surface
 ## for more information, ?gam
 SimCastMeta <- gam(Blight~s(C, RH, k = 150), data = model.data)
 
@@ -62,8 +62,8 @@ tmp.stack <- mask(tmp.stack, poplant)
 #### Run the model using CRU CL2.0 Data ####
 for(i in 1:12){
   x <- stack(tmp.stack[[i]], reh.stack[[i]]) # Take month raster layers from the year T and RH and add them to a T/RH stack to run the model
-  names(x) <- c('C','RH') # Rename layers in stack to match model construction
-  y <- predict(x, SimCastMeta, progress = 'text') # Run GAM with Raster Stack
+  names(x) <- c("C", "RH") # Rename layers in stack to match model construction
+  y <- predict(x, SimCastMeta, progress = "text") # Run GAM with Raster Stack
   y[y<0] = 0 # Set the predicted blight units falling below zero equal to zero
   
   if(i == 1){z <- y} else z <- stack(z, y)
@@ -76,7 +76,7 @@ for(j in 1:12){
     x <- mask(z[[j]], w) # first month of season
     xx <- mask(z[[j+1]], w) # second month of season
     xxx <- mask(z[[j+2]], w) # third month of season
-    y <- mean(x, xx, xxx)
+    y <- mean(x, xx, xxx) # take average blight unit accumulation for growing season
   } else if(j > 1 && j < 11){
     w <- reclassify(poplant, c(0, paste("0", j-1, sep = ""), NA))
     w <- reclassify(w, c(paste("0", j, sep = ""), 12, NA))
