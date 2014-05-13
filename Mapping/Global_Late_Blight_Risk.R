@@ -81,20 +81,20 @@ for(j in 1:12){
     w <- reclassify(w, c(paste("0", j, sep = ""), 12, NA))
     x <- stack(z[[j]], z[[j+1]], z[[j+2]]) # stack the three months of the first growing season
     x <- mask(x, w) # mask with suitable potato planting date
-    y <- mean(x) # take average blight unit accumulation for growing season
-    y <- cover(a, y) # replace NAs in raster file with new planting season blight unit values
+    a <- mean(x) # take average blight unit accumulation for growing season
+    y <- cover(y, a) # replace NAs in raster file with new planting season blight unit values
   } else if(j == 11){
     w <- reclassify(poplant, c(0, 10, NA))
     w <- reclassify(w, c(11, 12, NA))
     x <- stack(z[[11]], z[[12]], z[[1]]) # stack the three months of the first growing season
     x <- mask(x, w) # mask with suitable potato planting date
-    y <- mean(x) # take average blight unit accumulation for growing season
-    y <- cover(a, y) # replace NAs in raster file with new planting season blight unit values
+    a <- mean(x) # take average blight unit accumulation for growing season
+    y <- cover(y, a) # replace NAs in raster file with new planting season blight unit values
   }  else
   w <- reclassify(poplant, c(0, 11, NA))
   x <- stack(z[[12]], z[[1]], z[[2]]) # stack the three months of the first growing season
   x <- mask(x, w) # mask with suitable potato planting date
-  y <- mean(x) # take average blight unit accumulation for growing season
+  a <- mean(x) # take average blight unit accumulation for growing season
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
 

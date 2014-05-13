@@ -35,10 +35,10 @@ if(file.exists("Data/MIRCA_Poplant.grd") != TRUE){
   
   perc.r.IRC <- r.IRC/r.Area # calculate the percent area in cell that is irrigated potato
   perc.r.RFC <- r.RFC/r.Area # calculate the percent area in cell that is rainfed potato
-  perc.Area <- perc.r.IRC+perc.r.RFC # combine the rainfed and irrigated percentages, EcoCrop predicts both.
+  MIRCA <- perc.r.IRC+perc.r.RFC # combine the rainfed and irrigated percentages, EcoCrop predicts both.
   
-  perc.Area[perc.Area <= 0] <- NA #reclassify anything below 0% area to NA
-  MIRCA <- crop(perc.Area, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
+  MIRCA[MIRCA <= 0] <- NA #reclassify anything below 0% area to NA
+  MIRCA <- crop(MIRCA, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
   writeRaster(MIRCA, 'Data/MIRCA_Poplant.grd', overwrite = TRUE)
   
   file.remove("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz")
