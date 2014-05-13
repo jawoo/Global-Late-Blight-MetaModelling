@@ -26,10 +26,10 @@ if(file.exists("Cache/Planting Seasons/CRUCL2.0_PRF.grd") != TRUE){
   source("Models/Ecocrop CRU CL2.0 Potato Growing Seasons.R")} else
     poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd")
 
-## Load blight units calculated by SimCast, used to create the SimCastMeta GAM ####
+## Load blight units calculated by SimCast, used to create the SimCastMeta GAM
 #!!!!! Select ONLY ONE, resistant or susceptible blight units for the model run !!!!!#
 
-## Create a SUSCEPTIBLE model with this data for monthly weather data
+## SUSCEPTIBLE model with this data for monthly weather data
 blight.units <- read.table("Cache/Blight Units/all.monthly.susceptible.calcs.txt", head = TRUE, sep = "\t", nrows = 14749)
 
 ## Create a RESISTANT model with this data for monthly weather data
@@ -73,36 +73,32 @@ for(i in 1:12){
 for(j in 1:12){
   if(j == 1){
     w <- reclassify(poplant, c(01, 12, NA))
-    x <- mask(z[[j]], w) # first month of season
-    xx <- mask(z[[j+1]], w) # second month of season
-    xxx <- mask(z[[j+2]], w) # third month of season
-    y <- mean(x, xx, xxx) # take average blight unit accumulation for growing season
+    x <- stack(z[[j]], z[[j+1]], z[[j+2]]) # stack the three months of the first growing season
+    x <- mask(x, w) # mask with suitable potato planting date
+    y <- mean(x) # take average blight unit accumulation for growing season
   } else if(j > 1 && j < 11){
     w <- reclassify(poplant, c(0, paste("0", j-1, sep = ""), NA))
     w <- reclassify(w, c(paste("0", j, sep = ""), 12, NA))
-    x <- mask(z[[j]], w) # first month of season
-    xx <- mask(z[[j+1]], w) # second month of season
-    xxx <- mask(z[[j+2]], w) # third month of season
-    a <- mean(x, xx, xxx) # take average blight unit accumulation for growing season
+    x <- stack(z[[j]], z[[j+1]], z[[j+2]]) # stack the three months of the first growing season
+    x <- mask(x, w) # mask with suitable potato planting date
+    y <- mean(x) # take average blight unit accumulation for growing season
     y <- cover(a, y) # replace NAs in raster file with new planting season blight unit values
   } else if(j == 11){
     w <- reclassify(poplant, c(0, 10, NA))
     w <- reclassify(w, c(11, 12, NA))
-    x <- mask(z[[11]], w) # first month of season
-    xx <- mask(z[[12]], w) # second month of season
-    xxx <- mask(z[[1]], w) # third month of season
-    a <- mean(x, xx, xxx) # take average blight unit accumulation for growing season
+    x <- stack(z[[11]], z[[12]], z[[1]]) # stack the three months of the first growing season
+    x <- mask(x, w) # mask with suitable potato planting date
+    y <- mean(x) # take average blight unit accumulation for growing season
     y <- cover(a, y) # replace NAs in raster file with new planting season blight unit values
   }  else
   w <- reclassify(poplant, c(0, 11, NA))
-  x <- mask(z[[12]], w) # first month of season
-  xx <- mask(z[[1]], w) # second month of season
-  xxx <- mask(z[[2]], w) # third month of season
-  a <- mean(x, xx, xxx) # take average blight unit accumulation for growing season
+  x <- stack(z[[12]], z[[1]], z[[2]]) # stack the three months of the first growing season
+  x <- mask(x, w) # mask with suitable potato planting date
+  y <- mean(x) # take average blight unit accumulation for growing season
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
 
-plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer 120d Growing Season", xlab = "Longitude", ylab = "Latitude",
+plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season", xlab = "Longitude", ylab = "Latitude",
      legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos
