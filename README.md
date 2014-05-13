@@ -17,7 +17,7 @@ The study for which these models were developed can be found in [Sparks, A. H., 
       * resistant_monthly_gam.txt - Look up table values for a resistant potato cultivar, daily time-step
       * susceptible_daily_gam.txt - Look up table values for a resistant potato cultivar, daily time-step
       * susceptible_monthly_gam.txt - Look up table values for a resistant potato cultivar, daily time-step
-  * **Planting Seasons** * - Native R raster package files with EcoCrop model output of the predicted month where planting results in the highest 90 day yield
+  * **Planting Seasons** - Native R raster package files with EcoCrop model output of the predicted month where planting results in the highest 90 day yield
       * CRU_CL20_Combinded.grd/.gri - R raster package native file of combined rainfed and irrigated potato planting dates based on CRU CL2.0 data using EcoCrop to predict the month for crop establishment that results in the highest yield, generated using the script, EcoCrop CRU CL2.0 Potato Growing Seasons.R, found in the Models directory
       * CRU_CL20_PIR.grd/.gri - R raster package native file of irrigated potato planting dates based on CRU CL2.0 data using EcoCrop to predict the month for crop establishment that results in the highest yield, generated using the script, EcoCrop CRU CL2.0 Potato Growing Seasons.R, found in the Models directory
       * CRU_CL20_PRF.grd/.gri - R raster package native file of rainfed potato planting dates based on CRU CL2.0 data using EcoCrop to predict the month for crop establishment that results in the highest yield, generated using the script, EcoCrop CRU CL2.0 Potato Growing Seasons.R, found in the Models directory
