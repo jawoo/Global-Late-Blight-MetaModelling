@@ -48,5 +48,5 @@ ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename = "", ...
   if (filename == "") { outr <- setValues(outr, as.vector(vv))  }
   return(outr)
 }
-}
+
 #eos

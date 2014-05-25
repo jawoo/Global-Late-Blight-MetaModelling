@@ -2,7 +2,7 @@
 # title         : EcoCrop CRU CL2.0 Potato Growing Seasons.R;
 # purpose       : create global potato growing seasons using Ecocrop with CRU CL 2.0 data;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Los Baños, Laguna, May 2014;
+# last update   : in Raipur, India, May 2014;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : PotatoPlant_CRUCL2.0.grd, CRUCL2.0_PRF.grd, CRUCL2.0_PIR.grd;
 # remarks 1     : ;
@@ -15,7 +15,7 @@ library(dismo)
 ##### End Libraries ####
 
 #### Load functions ####
-source("Functions/ecospat.R")
+source("Functions/run_ecocrop.R")
 source("Functions/Get_CRU_20_Data.R")
 source("Functions/create_stack.R")
 #### End Functions ####
@@ -39,7 +39,7 @@ tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
 tmp.stack <- mask(tmp.stack, MIRCA)
 
-pot       <- getCrop('potato')
+crop       <- "potato"
 pot@RMIN  <- 125
 pot@ROPMN <- 250
 pot@ROPMX <- 350
@@ -49,8 +49,8 @@ pot@GMIN  <- pot@GMAX <- 100
 
 #### run ECOCROP model on raster stack of pre, tmp, tmn and tmx #####
 # NOTE: the ecospat() function is time intensive
-prf <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
-pir <- ecospat(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
+prf <- run.ecocrop(crop, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = TRUE, filename = "Cache/Planting Seasons/CRUCL2.0_PRF.grd", overwrite = TRUE) # Rainfed potato
+pir <- run.ecocrop(crop, tmn.stack, tmx.stack, tmp.stack, pre.stack, rainfed = FALSE, filename = "Cache/Planting Seasons/CRUCL2.0_PIR.grd", overwrite = TRUE) # Irrigated potato
 
 # Read raster objects of predicted planting dates from disk
 poplant.prf <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.grd") # rainfed potato planting date raster
