@@ -1,15 +1,15 @@
 ##############################################################################
-# title         : run_ecocrop.R;
+# title         : ecospat.R;
 # purpose       : function to run the ecocrop model using a raster stack;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Raipur, India, May 2014;
+# last update   : in Los Baños, May 2014;
 # inputs        : raster stacks of avg/min/max temperature, precipitation;
 # outputs       : na;
 # remarks 1     : ;
-# Licence:      : GPL2;
+# Licence:      : GPL3;
 ##############################################################################
 
-run.ecocrop <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
+ecospat <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
   filename  <- trim(filename)
   outr      <- raster(tmp)
   v         <- vector(length = ncol(outr))
@@ -42,5 +42,3 @@ run.ecocrop <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...)
 }
 
 #eos
-
-  
