@@ -9,6 +9,14 @@
 # Licence:      : GPL2;
 ##############################################################################
 
+pot <- getCrop("potato")
+pot@RMIN  <- 125
+pot@ROPMN <- 250
+pot@ROPMX <- 350
+pot@TMIN  <- 7
+pot@TOPMX <- 20
+pot@GMIN  <- pot@GMAX <- 100
+
 run.ecocrop <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
   filename  <- trim(filename)
   outr      <- raster(tmp)
@@ -30,7 +38,7 @@ run.ecocrop <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...)
       }
       
       if(sum(is.na(clm)) == 0) {
-        e <- ecocrop(crop = "potato", clm[, 1], clm[, 2], clm[, 3], rain = rainfed) 
+        e <- ecocrop(crop = pot, tmin = clm[, 1], tavg = clm[, 2], prec = clm[, 3], rain = rainfed) 
         v[i] <- e@maxper[1]
       }
     }

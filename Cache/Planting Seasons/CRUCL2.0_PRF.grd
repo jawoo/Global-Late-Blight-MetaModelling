@@ -1,6 +1,6 @@
 [general] 
 creator=R package 'raster' 
-created= 2014-05-25 16:06:20 
+created= 2014-06-13 17:24:30 
 [georeference] 
 nrows= 900 
 ncols= 2160 
@@ -8,7 +8,7 @@ xmin= -180
 ymin= -60 
 xmax= 180 
 ymax= 90 
-projection= +proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0 
+projection= +proj=longlat +datum=WGS84 
 [data] 
 datatype= FLT8S 
 byteorder= little 
