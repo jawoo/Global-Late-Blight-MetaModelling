@@ -17,7 +17,7 @@ pot@TMIN  <- 7
 pot@TOPMX <- 20
 pot@GMIN  <- pot@GMAX <- 100
 
-run.ecocrop <- function(crop, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
+run.ecocrop <- function(pot, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
   filename  <- trim(filename)
   outr      <- raster(tmp)
   v         <- vector(length = ncol(outr))
