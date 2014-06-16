@@ -27,17 +27,17 @@ require("rgl")
 
 ##### Data for daily models #####
 ## Create a SUSCEPTIBLE model with this data for daily weather data
-blight.units <- read.table("Cache/Blight Units/all.daily.susceptible.calcs.txt", head = TRUE, sep = "\t", nrow = 448618)
+blight.units <- read.table("Cache/Blight Units/daily_susceptible_blight_units.txt", head = TRUE, sep = "\t", nrow = 448618)
 
 ## Create a RESISTANT cultivar model with this data for daily weather data
-blight.units <- read.table("Cache/Blight Units/all.daily.resistant.calcs.txt", head = TRUE, sep = "\t", nrow = 448618)
+blight.units <- read.table("Cache/Blight Units/daily_resistant_blight_units.txt", head = TRUE, sep = "\t", nrow = 448618)
 
 ##### Data for monthly models #####
 ## Create a SUSCEPTIBLE model with this data for monthly weather data
-blight.units <- read.table("Cache/Blight Units/all.monthly.susceptible.calcs.txt", head = TRUE, sep = "\t", nrows = 14749)
+blight.units <- read.table("Cache/Blight Units/monthly_susceptible_blight_units.txt", head = TRUE, sep = "\t", nrows = 14749)
 
 ## Create a RESISTANT model with this data for monthly weather data
-blight.units <- read.table("Cache/Blight Units/all.monthly.resistant.calcs.txt", head = TRUE, sep = "\t", nrows = 14749)
+blight.units <- read.table("Cache/Blight Units/monthly_resistant_blight_units.txt", head = TRUE, sep = "\t", nrows = 14749)
 
 ##### End of data import #####
 
