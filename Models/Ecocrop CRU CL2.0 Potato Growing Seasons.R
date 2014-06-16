@@ -66,7 +66,7 @@ com <- focal(com, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE)
 com <- mask(com, MIRCA)
 names(com) <- "Ecocrop Planting Dates for 1975"
 writeRaster(com, "Cache/Planting Seasons/CRUCL2.0_Combined.grd", overwrite = TRUE)
-plot(com, main = "Potato planting dates by first month\nas predicted by EcoCrop", xlab = "Longitude", ylab = "Latitude",
+plot(com, main = "Potato planting dates as predicted by EcoCrop", xlab = "Longitude", ylab = "Latitude",
      legend.args = list(text = "Month", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos
