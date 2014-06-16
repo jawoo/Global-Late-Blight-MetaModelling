@@ -2,7 +2,7 @@
 # title         : run_ecocrop.R;
 # purpose       : function to run the ecocrop model using a raster stack;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Raipur, India, May 2014;
+# last update   : in Los Baños, Philippines, June 2014;
 # inputs        : raster stacks of avg/min/max temperature, precipitation;
 # outputs       : na;
 # remarks 1     : ;
