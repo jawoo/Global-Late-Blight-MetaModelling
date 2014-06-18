@@ -28,11 +28,13 @@ CRUCL2.0 <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptib
 ## or use RESISTANT Blight Units ##
 CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.grd")
 
-production <- read.csv("Data/Production_Crops_E_All_Data.csv")
+production <- read.csv("Data/Production_Crops_E_All_Data.csv") 
+production <- subset(production, CountryCode < 5000) # select only countries, not areas
+production <- subset(production, Year == 2012)
 production <- subset(production, Item == "Potatoes")
 production <- subset(production, Element == "Production")
-production <- subset(production, Year == 2012)
-production <- subset(production, CountryCode < 5000)
+
+
 
 wrld <- readOGR(dsn = "/Users/asparks/Downloads/ne_110m_admin_0_countries", layer = "ne_110m_admin_0_countries")
 
