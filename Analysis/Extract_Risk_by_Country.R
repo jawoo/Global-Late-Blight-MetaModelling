@@ -76,9 +76,11 @@ wrld <- spCbind(wrld, values) # Bind the data frames together in a spatial objec
 mapCountryData(wrld, nameColumnToPlot = "BlightRisk", mapTitle = "Blight Units", catMethod = "pretty")
 
 ### Graphs
-## Sort the data frame by potato producers
+## Create a new dataframe for ggplot2 to use to graph
 averages <- na.omit(data.frame(wrld$NAME, wrld$Value, wrld$BlightRisk))
 names(averages) <- c("Country", "HaPotato", "BlightRisk")
+
+## Sort the data frame by potato producers
 sorted <- averages[order(averages$HaPotato), ] # Sort by hectares of potato
 top10 <- data.frame(tail(sorted, 10)) # Create data frame of top ten growing countries for graph
 top10 <- top10[order(-top10$HaPotato), ] # Invert dataframe for nice table
@@ -89,13 +91,28 @@ top10 # View the top 10 potato producing countries by Ha production and correspo
 ## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot.
 ggplot(top10, aes(x = log(HaPotato), y = BlightRisk, fill = as.factor(Country)), guide = FALSE) +
   geom_bar(stat = "identity", position = "dodge") +
-  scale_y_continuous(name = "Blight Units", limits = c(0, 2.5)) +
   xlab("Log(Ha) potato production") +
   scale_fill_discrete("Country") +
   geom_text(data = top10,
             aes(x = log(HaPotato), y  = BlightRisk - 0.2, label = as.factor(Country)), 
             position = position_dodge(width = 0.8),
-            size=4) +
+            size = 4) +
+  coord_flip()
+
+## Sort the data frame by late blight risk ranking
+sorted.blight <- averages[order(averages$BlightRisk), ] # Sort by hectares of potato
+top10.blight <- data.frame(tail(sorted.blight, 10)) # Create data frame of top ten growing countries for graph
+top10.blight$Country <- factor(top10.blight$Country, levels = top10.blight$Country[order(top10.blight$BlightRisk)]) # Invert dataframe for nice table
+
+top10.blight # Top ten countries with highest risk for late blight
+
+### Generate bar chart of blight units and hectarage of Top 10 countries ranked by blight risk
+## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot.
+ggplot(top10.blight, aes(x = factor(Country), y = BlightRisk)) +
+  geom_bar(stat = "identity", aes(fill = BlightRisk)) +
+  xlab("Country") +
+  scale_fill_continuous("Blight Units") +
+  ylab("Blight Units") +
   coord_flip()
 
 #eos
