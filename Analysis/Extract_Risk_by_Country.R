@@ -13,12 +13,11 @@ library(raster)
 library(maptools)
 library(ggplot2)
 library(rworldmap)
-library(wesanderson)
 ####### End Libraries ######
 
-tf <- tempfile()
-
 ##### Begin data import and cleanup #####
+# Tempfile for download of FAO data
+tf <- tempfile()
 
 # Countries for mapping and extracting blight risk by country from rworldmap
 data(countryExData) 
