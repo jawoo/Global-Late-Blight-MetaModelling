@@ -10,7 +10,6 @@
 
 ###### Libraries #####
 library(raster)
-library(rgdal)
 library(maptools)
 library(ggplot2)
 library(rworldmap)
@@ -18,7 +17,6 @@ library(wesanderson)
 ####### End Libraries ######
 
 tf <- tempfile()
-td <- tempdir()
 
 ##### Begin data import and cleanup #####
 
@@ -32,15 +30,16 @@ CRUCL2.0 <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptib
 ## or use RESISTANT Blight Units ##
 CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.grd")
 
-download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", tf)
-production <- read.csv(unzip(tf), header = TRUE, stringsAsFactors = FALSE, nrows = 2359749)
+## Download crop production data from FAO and create dataframe of only potato production data
+download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", tf) 
+production <- read.csv(unzip(tf), header = TRUE, stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
+file.remove("Production_Crops_E_All_Data.csv") # clean up the unzipped CSV file
 production <- subset(production, CountryCode < 5000) # select only countries, not areas
 production <- subset(production, Year == 2012) # select the most recent year available
 production <- subset(production, Item == "Potatoes") # select only potatoes
 production <- subset(production, Element == "Area harvested") # select for number hectares harvested
 
-#### Replace names of countries that will not match rworldmap data names ####
-
+## Replace names of countries that will not match rworldmap data names
 ## China needs to be seperated from Taiwan, luckily there's a "Mainland China" and "Taiwan" in production data
 production <- subset(production, Country != "China")
 production[, 2][production[, 2] == "China, Taiwan Province of"] <- "Taiwan"
@@ -59,33 +58,42 @@ production <- subset(production, Country != "R\xe9union")
 
 ##### End of data import and cleanup #####
 
-### Now we can join the FAO data with the rworldmap
+##### Data extraction and munging #####
 wrld <- joinCountryData2Map(production, countryExData, joinCode = "NAME", nameJoinColumn = "Country", verbose = TRUE)
-
-#### Extract and visualise country risk #####
 
 values <- extract(CRUCL2.0, wrld) # Extract the values of the raster object by polygons in shape file
 values <- data.frame(unlist(lapply(values, FUN = mean, na.rm = TRUE))) # unlist and generate mean values for each polygon
-names(values) <- "BlightRisk"
-row.names(values) <- row.names(wrld)
+names(values) <- "BlightRisk" # assign "BlightRisk" name to column
+row.names(values) <- row.names(wrld) # assign row names to values so that we can use spCbind to merge with wrld
+row.names(wrld) <- row.names(wrld) # for some reason the above results in row names that don't match, this fixes that
 
-wrld <- cbind(wrld, values) # Bind the data frames together
+wrld <- spCbind(wrld, values) # Bind the data frames together in a spatial object
 
-mapCountryData(wrld, nameColumnToPlot = "BlightRisk")
+#### End data extraction and munging ####
 
+##### Data visulisation #####
+### Maps
+## Plot average global blight risk by countries
+mapCountryData(wrld, nameColumnToPlot = "BlightRisk", mapTitle = "Blight Units", catMethod = "pretty")
 
-### Sort the data frame by potato producers
+### Graphs
+## Sort the data frame by potato producers
 averages <- na.omit(data.frame(wrld$NAME, wrld$Value, wrld$BlightRisk))
 names(averages) <- c("Country", "HaPotato", "BlightRisk")
 sorted <- averages[order(averages$HaPotato), ] # Sort by hectares of potato
 top10 <- data.frame(tail(sorted, 10)) # Create data frame of top ten growing countries for graph
 top10 <- top10[order(-top10$HaPotato), ] # Invert dataframe for nice table
 
-### Generate bubble plot of blight units and hectarage of Top 10 potato producing countries
-
-ggplot(top10, aes(x = HaPotato, y = BlightRisk, fill = as.factor(Country)), guide = FALSE) +
-  geom_bar(stat = "identity", position = "jitter") +
+### Generate bar chart of blight units and hectarage of Top 10 potato producing countries
+## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot.
+ggplot(top10, aes(x = log(HaPotato), y = BlightRisk, fill = as.factor(Country)), guide = FALSE) +
+  geom_bar(stat = "identity", position = "dodge") +
   scale_y_continuous(name = "Blight Units", limits = c(0, 2.5)) +
-  theme_bw()
-
+  xlab("Log(Ha) potato production") +
+  scale_fill_discrete("Country") +
+  geom_text(data = top10,
+            aes(x = log(HaPotato), y  = BlightRisk - 0.2, label = as.factor(Country)), 
+            position = position_dodge(width = 0.8),
+            size=4) +
+  coord_flip()
 #eos
