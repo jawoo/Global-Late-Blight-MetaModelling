@@ -83,6 +83,8 @@ sorted <- averages[order(averages$HaPotato), ] # Sort by hectares of potato
 top10 <- data.frame(tail(sorted, 10)) # Create data frame of top ten growing countries for graph
 top10 <- top10[order(-top10$HaPotato), ] # Invert dataframe for nice table
 
+top10 # View the top 10 potato producing countries by Ha production and corresponding blight units (level risk)
+
 ### Generate bar chart of blight units and hectarage of Top 10 potato producing countries
 ## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot.
 ggplot(top10, aes(x = log(HaPotato), y = BlightRisk, fill = as.factor(Country)), guide = FALSE) +
@@ -95,4 +97,5 @@ ggplot(top10, aes(x = log(HaPotato), y = BlightRisk, fill = as.factor(Country)),
             position = position_dodge(width = 0.8),
             size=4) +
   coord_flip()
+
 #eos
