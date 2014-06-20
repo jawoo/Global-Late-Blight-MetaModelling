@@ -10,6 +10,9 @@ The metamodelling approach can be found in [Sparks, A. H., Forbes, G. A., Hijman
 The study for which these models were developed can be found in [Sparks, A. H., Forbes, G. A, Hijmans, R. J., & Garrett K. A. (2014). Climate change may have limited effect on global risk of potato late blight. Global Change Biology, doi:10.1111/gcb.12587](http://onlinelibrary.wiley.com/doi/10.1111/gcb.12587/abstract).
 
 ## Directory structure ##
+* **Analysis** - Contains scripts that are used for analysis
+  * **Extract_Risk_by_Country.R** - Script that will download FAO production data and merge with country data to visualize countries risk rank
+  * **SimCastMeta_Global_Late_Blight_Risk.R** - Script that uses SimCastMeta to generate global raster maps of blight units from climate data
 * **Cache** - Contains supporting data that has been modified from original format in some meaningful way.
   * **Blight Units** - Data necessary for creating the models
   * **Global Blight Risk Maps** - Output from the SimCastMeta model, when run using the CRU CL2.0 data
