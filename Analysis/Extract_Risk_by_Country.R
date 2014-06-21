@@ -25,10 +25,10 @@ data(countryExData)
 
 ##!!!!!!!!!! Use only ONE of the following rasters at a time !!!!!!!!!!##
 ## use only SUSCEPTIBLE blight units ##
-CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.grd")
+CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
 
 ## or use RESISTANT Blight Units ##
-CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.grd")
+CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
 
 ## Download crop production data from FAO and create dataframe of only potato production data
 download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", tf) # this is a large file
