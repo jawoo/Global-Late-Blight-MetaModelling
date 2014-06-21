@@ -13,6 +13,7 @@ library(raster)
 library(maptools)
 library(ggplot2)
 library(rworldmap)
+library(reshape)
 ####### End Libraries ######
 
 ##### Begin data import and cleanup #####
@@ -31,34 +32,42 @@ CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resi
 
 ## Download crop production data from FAO and create dataframe of only potato production data
 download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", tf) # this is a large file
-production <- read.csv(unzip(tf), stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
+FAO <- read.csv(unzip(tf), stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
 file.remove("Production_Crops_E_All_Data.csv") # clean up the unzipped CSV file
-production <- subset(production, CountryCode < 5000) # select only countries, not areas
-production <- subset(production, Year == 2012) # select the most recent year available
-production <- subset(production, Item == "Potatoes") # select only potatoes
-production <- subset(production, Element == "Area harvested") # select for number hectares harvested
+FAO <- subset(FAO, CountryCode < 5000) # select only countries, not areas
+FAO <- subset(FAO, Year == 2012) # select the most recent year available
+FAO <- subset(FAO, Item == "Potatoes") # select only potatoes
+FAO <- FAO[, -11] # drop the flag column
+
+## Because of the "Element" column, we have to go through gymnastics to get columns for yield and area harvested
+yield <- subset(FAO, Element == "Yield") # select for yield
+production <- subset(FAO, Element == "Area harvested") # Select for area harvested
+names(production)[9:10] <- c("AreaUnit", "AreaHarvested") # Rename the production columns
+
+FAO <- merge(production, yield, by = c( "CountryCode", "Country", "ItemCode", "Item", "Year")) # merge the new dataframes using the FAO object
+names(FAO)[14:15] <- c("YieldUnit", "Yield") # name the yield columns in the resulting FAO data frame
 
 ## Replace names of countries that will not match rworldmap data names
 ## China needs to be seperated from Taiwan, luckily there's a "Mainland China" and "Taiwan" in production data
-production <- subset(production, Country != "China")
-production[, 2][production[, 2] == "China, Taiwan Province of"] <- "Taiwan"
-production[, 2][production[, 2] == "China, mainland"] <- "China"
+FAO <- subset(FAO, Country != "China")
+FAO[, 2][FAO[, 2] == "China, Taiwan Province of"] <- "Taiwan"
+FAO[, 2][FAO[, 2] == "China, mainland"] <- "China"
 
 ## Rename "Sudan (former)" to just "Sudan"
-production[, 2][production[, 2] == "Sudan (former)"] <- "Sudan"
+FAO[, 2][FAO[, 2] == "Sudan (former)"] <- "Sudan"
 
 ## Rename "Cabo Verde" to "Republic of Cape Verde"
-production[, 2][production[, 2] == "Cabo Verde"] <- "Republic of Cape Verde"
+FAO[, 2][FAO[, 2] == "Cabo Verde"] <- "Republic of Cape Verde"
 
 ## Make Reúnion a part of France
-production[, 2][production[, 2] == "France"] <- sum(production[, 10][production[, 2] == "France" && "R\xe9union"])
-production[, 2][production[, 2] == 0] <- "France"
-production <- subset(production, Country != "R\xe9union")
+FAO[, 2][FAO[, 2] == "France"] <- sum(FAO[, 10][FAO[, 2] == "France" && "R\xe9union"])
+FAO[, 2][FAO[, 2] == 0] <- "France"
+FAO <- subset(FAO, Country != "R\xe9union") # Remove Reúnion from the data
 
 ##### End of data import and cleanup #####
 
 ##### Data extraction and munging #####
-wrld <- joinCountryData2Map(production, countryExData, joinCode = "NAME", nameJoinColumn = "Country", verbose = TRUE)
+wrld <- joinCountryData2Map(FAO, countryExData, joinCode = "NAME", nameJoinColumn = "Country", verbose = TRUE)
 
 values <- extract(CRUCL2.0.risk, wrld) # Extract the values of the raster object by country polygons in shape file
 values <- data.frame(unlist(lapply(values, FUN = mean, na.rm = TRUE))) # unlist and generate mean values for each polygon
@@ -73,12 +82,12 @@ wrld <- spCbind(wrld, values) # Bind the data frames together in a spatial objec
 ##### Data visualization #####
 ### Maps
 ## Plot average global blight risk by countries
-mapCountryData(wrld, nameColumnToPlot = "BlightRisk", mapTitle = "Blight Units", catMethod = "pretty")
+mapCountryData(wrld, nameColumnToPlot = "BlightRisk", mapTitle = "Average Country Blight Units\nor Relative Risk Rank", catMethod = "pretty")
 
 ### Graphs
 ## Create a new dataframe for ggplot2 to use to graph
-averages <- na.omit(data.frame(wrld$NAME, wrld$Value, wrld$BlightRisk))
-names(averages) <- c("Country", "HaPotato", "BlightRisk")
+averages <- na.omit(data.frame(wrld$NAME, wrld$Yield, wrld$AreaHarvested, wrld$BlightRisk))
+names(averages) <- c("Country", "Yield", "HaPotato", "BlightRisk")
 
 ## Sort the data frame by potato producers
 sorted <- averages[order(averages$HaPotato), ] # Sort by hectares of potato
@@ -86,18 +95,16 @@ top10 <- data.frame(tail(sorted, 10)) # Create data frame of top ten growing cou
 
 top10 # View the top 10 potato producing countries by Ha production and corresponding blight units (level risk)
 
-### Generate bar chart of blight units and hectarage of Top 10 potato producing countries
+### Generate bubble chart of blight units, potato yields and hectarage of Top 10 potato producing countries
 ## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot
-ggplot(top10, aes(x = log(HaPotato), y = BlightRisk, fill = as.factor(Country)), guide = FALSE) +
-  geom_bar(stat = "identity", position = "dodge") +
-  xlab("Log(Ha) potato production") +
-  scale_fill_discrete("Country") +
-  geom_text(data = top10,
-            aes(x = log(HaPotato), y  = BlightRisk - 0.2, label = as.factor(Country)), 
-            position = position_dodge(width = 0.8),
-            size = 4) +
-  coord_flip()
+ggplot(top10, aes(x = HaPotato, y = BlightRisk, size = Yield/10000, label = Country)) +
+  geom_point(colour = "white", fill = "red", shape = 21, alpha = 0.5) + 
+  scale_size_area(max_size = 30, "Yield (T/Ha)") +
+  xlab("Potato production (Ha)") +
+  ylab("Blight units") +
+  geom_text(size = 4) 
 
+### Generate a bar chart of the ten countries with the highest blight risks
 ## Sort the data frame by late blight risk ranking
 sorted.blight <- averages[order(averages$BlightRisk), ] # Sort by hectares of potato
 top10.blight <- data.frame(tail(sorted.blight, 10)) # Create data frame of top ten growing countries for graph
@@ -109,7 +116,7 @@ top10.blight # Top ten countries by highest risk for late blight
 ggplot(top10.blight, aes(x = factor(Country), y = BlightRisk)) +
   geom_bar(stat = "identity", aes(fill = BlightRisk)) +
   xlab("Country") +
-  scale_fill_continuous("Blight Units") +
+  scale_fill_gradient("Blight Units") +
   ylab("Blight Units") +
   coord_flip()
 
