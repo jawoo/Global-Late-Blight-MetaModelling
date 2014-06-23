@@ -1,10 +1,11 @@
 ##############################################################################
 # title         : A2 Scenario Potato Growing Seasons.R;
-# purpose       : create global potato growing seasons using Ecocrop with CRU CL 2.0 data;
+# purpose       : create global potato growing seasons using Ecocrop with A2 
+#               : climate emission scenario data;
 # producer      : prepared by R. Hijmans and A. Sparks;
 # last update   : in Los Baños, Philippines, June 2014;
-# inputs        : CRU CL2.0 Climate data;
-# outputs       : PotatoPlant_CRUCL2.0.grd, CRUCL2.0_PRF.grd, CRUCL2.0_PIR.grd;
+# inputs        : A2 Ensemble Model Climate data;
+# outputs       : PotatoPlant_A2_2050.grd, A2_2050_PRF.grd, A2_2050_PIR.grd;
 # remarks 1     : ;
 # Licence:      : GPL2;
 ##############################################################################
@@ -22,32 +23,53 @@ source("Functions/run_ecocrop.R")
 ## Tempfile for download of FAO data
 tf <- tempfile()
 
-## Begin download from Figshare
-A2.pre <- download.file("")
-A2.tmn <- download.file("")
-A2.tmp <- download.file("http://files.figshare.com/1545357/A2_Average_Temperature.zip", tf)
-A2.tmx <- download.file("")
+### Begin download from Figshare and/or import from our Data directory if already existing
+
+## First check to see if the files exist, if they do, then we go to the next portion, if not we download them.
+# As this download takes a while, the files will be stored in "Data" directory, not necessary to download after first time
+if(length(list.files(path = "Data/A2 Precipitation")) != 36){
+  download.file("http://files.figshare.com/1545489/A2_Precipitation.zip", tf) # Download A2 precipitation data geotiff files
+  unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 precipitation files to "Data/A2 Precipitation" directory
+}
+
+if(length(list.files(path = "Data/A2 Minimum Temperature/")) != 36){
+  download.file("http://files.figshare.com/1545376/A2_Minimum_Temperature.zip", tf) # Download A2 minimum temperature data geotiff files
+  unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 minimum temperature files to "Data/A2 Minimum Temperature" directory
+}
+
+if(length(list.files(path = "Data/A2 Maximum Temperature")) != 36){
+  download.file("http://files.figshare.com/1545368/A2_Maximum_Temperature.zip", tf) # Download A2 maximum temperature data geotiff files
+  unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 maximum temperature files to "Data/A2 Maximum Temperature" directory
+}
+
+if(length(list.files(path = "Data/A2 Average Temperature")) != 36){
+  download.file("http://files.figshare.com/1545357/A2_Average_Temperature.zip", tf) # Download A2 maximum temperature data geotiff files
+  unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 maximum temperature files to "Data/A2 Maximum Temperature" directory
+}
 
 source("Functions/DownloadMIRCA.R") # Script will download and unzip MIRCA data or simply load if available in /Data
+
+## Function to sort out the different time-slices, most analysis was with 2050 only so it is the only one featured here. Feel free to use the other two time-slices in the same fashion
+pre.stack <- stack(list.files(path = "Data/A2 Precipitation", pattern = "a2pre50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load precipitation tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
+tmn.stack <- stack(list.files(path = "Data/A2 Minimum Temperature", pattern = "a2tn50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load minimum temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
+tmx.stack <- stack(list.files(path = "Data/A2 Maximum Temperature", pattern = "a2tx50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load maximum temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
+tmp.stack <- stack(list.files(path = "Data/A2 Average Temperature", pattern = "a2tmp50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load average temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
+
 #### End data import ####
 
-## Function to sort out the different time-slices
-pre.stack <- 
-tmn.stack <- 
-tmp.stack <- 
-tmx.stack <- 
-
-#### Mask the CRU CL2.0 stacks with MIRCA to reduce the run time of EcoCrop ####
+#### Mask the A2 stacks with MIRCA to reduce the run time of EcoCrop ####
 # Also, removes areas where potato is not grown. EcoCrop will predict potato growth nearly anywhere with irrigation
 pre.stack <- mask(pre.stack, MIRCA)
 tmn.stack <- mask(tmn.stack, MIRCA)
 tmx.stack <- mask(tmx.stack, MIRCA)
 tmp.stack <- mask(tmp.stack, MIRCA)
 
+#### End data masking ####
+
 #### run ECOCROP model on raster stack of pre, tmp, tmn and tmx #####
 prf <- run.ecocrop(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, 
                    rainfed = TRUE, 
-                   filename = "Cache/Planting Seasons/CRUCL2.0_PRF.tif", 
+                   filename = "Cache/Planting Seasons/A2_2050_PRF.tif", 
                    format = "GTiff", dataType = "INT2S", 
                    options = c("COMPRESS=LZW"), 
                    NAFlag = -9999,
@@ -55,26 +77,26 @@ prf <- run.ecocrop(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack,
 
 pir <- run.ecocrop(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, 
                    rainfed = FALSE, 
-                   filename = "Cache/Planting Seasons/CRUCL2.0_PIR.tif",
+                   filename = "Cache/Planting Seasons/A2_2050_PIR.tif",
                    format = "GTiff", dataType = "INT2S", 
                    options = c("COMPRESS=LZW"), 
                    NAFlag = -9999,
                    overwrite = TRUE) # Irrigated potato
 
 # Read raster objects of predicted planting dates from disk
-poplant.prf <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.tif") # rainfed potato planting date raster
+poplant.prf <- raster("Cache/Planting Seasons/A2_2050_PRF.tif") # rainfed potato planting date raster
 poplant.prf <- reclassify(poplant.prf, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 names(poplant.prf) <- "Ecocrop Rainfed Planting Dates for 1975"
-writeRaster(poplant.prf, "Cache/Planting Seasons/CRUCL2.0_PRF.tif",
+writeRaster(poplant.prf, "Cache/Planting Seasons/A2_2050_PRF.tif",
             format = "GTiff", dataType = "INT2S", 
             options = c("COMPRESS=LZW"), 
             NAFlag = -9999,
             overwrite = TRUE)
 
-poplant.pir <- raster("Cache/Planting Seasons/CRUCL2.0_PIR.tif") # irrigated potato planting date raster
+poplant.pir <- raster("Cache/Planting Seasons/A2_2050_PIR.tif") # irrigated potato planting date raster
 poplant.pir <- reclassify(poplant.pir, c(0, 0, NA), include.lowest = TRUE) # set values of 0 equal to NA
 names(poplant.pir) <- "Ecocrop Irrigated Planting Dates for 1975"
-writeRaster(poplant.pir, "Cache/Planting Seasons/CRUCL2.0_PIR.tif",
+writeRaster(poplant.pir, "Cache/Planting Seasons/A2_2050_PIR.tif",
             format = "GTiff", dataType = "INT2S", 
             options = c("COMPRESS=LZW"), 
             NAFlag = -9999,
@@ -91,7 +113,7 @@ com <- focal(com, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE)
 #### Finally, clean up the planting date map again with MIRCA to remove non-potato growing areas, then save to disk ####
 com <- mask(com, MIRCA)
 names(com) <- "Ecocrop Planting Dates for 1975"
-writeRaster(com, "Cache/Planting Seasons/CRUCL2.0_Combined.tif",
+writeRaster(com, "Cache/Planting Seasons/A2_2050_Combined.tif",
             format = "GTiff", dataType = "INT2S", 
             options = c("COMPRESS=LZW"), 
             NAFlag = -9999,
