@@ -2,7 +2,7 @@
 # title         : Get_CRU_20_Data.R;
 # purpose       : Two functions that download and process CRU CL 2.0 data into data frames in R;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, Jun. 2014;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : ;
 # remarks 1     : a standalone version exists as a gist here: https://gist.github.com/adamhsparks/11284393;
@@ -51,7 +51,8 @@ CRU_SimCastMeta_Data_DL <- function(){
   
   vars <- list(reh, tmp)
   names(vars) <- c('reh', 'tmp')
-  rm(tf)
+  rm(tf) # clean up workspace
+  gc()
   return(vars)
 }
 

@@ -1,8 +1,8 @@
 ##############################################################################
-# title         : create_stack.R;
+# title         : Create_Stack.R;
 # purpose       : Create raster stacks of CRU CL 2.0 data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, Jun 2014;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : ;
 # remarks 1     : a standalone version exists as a gist here: https://gist.github.com/adamhsparks/11284393;

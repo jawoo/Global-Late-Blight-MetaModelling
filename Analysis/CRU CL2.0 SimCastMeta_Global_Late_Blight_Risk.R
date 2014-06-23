@@ -1,11 +1,11 @@
 ##############################################################################
-# title         : SimCastMeta_Global_Late_Blight_Risk.R;
-# purpose       : create global potato late blight risk using SimCastMeta with CRU CL 2.0 data;
+# title         : A2 2050 SimCastMeta_Global_Late_Blight_Risk.R;
+# purpose       : create global potato late blight risk using SimCastMeta with A2 2050 data;
 # producer      : prepared by A. Sparks;
 # last update   : in Los Baños, Laguna, June 2014;
-# inputs        : CRU CL2.0 Climate data;
+# inputs        : A2 2050 time-slice climate data;
 # outputs       : ;
-# remarks 1     : EcoCrop CRU CL2.0 Potato Growing Seasons.R must be run to generate the planting
+# remarks 1     : EcoCrop A2 2050 Potato Growing Seasons.R must be run to generate the planting
 #                 date raster before this script is used. If it is not, the EcoCrop planting date
 #                 script will automatically run and generate the necessary file;
 # Licence:      : GPL2;
@@ -22,9 +22,9 @@ source("Functions/create_stack.R")
 #### End Functions ####
 
 #### Begin data import ####
-if(file.exists("Cache/Planting Seasons/CRUCL2.0_PRF.tif") != TRUE){
+if(file.exists("Cache/Planting Seasons/CRUCL2.0_Combined.tif") != TRUE){
   source("Models/Ecocrop CRU CL2.0 Potato Growing Seasons.R")} else
-    poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.tif")
+    poplant <- raster("Cache/Planting Seasons/CRUCL2.0_Combined.tif")
 
 ## Load blight units calculated by SimCast, used to create the SimCastMeta GAM
 #!!!!! Select ONLY ONE, resistant or susceptible blight units for the model run !!!!!#
@@ -98,7 +98,7 @@ for(j in 1:12){
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
 
-plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season", xlab = "Longitude", ylab = "Latitude",
+plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season\n1975", xlab = "Longitude", ylab = "Latitude",
      legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos
