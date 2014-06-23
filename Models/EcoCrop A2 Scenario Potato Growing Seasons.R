@@ -1,5 +1,5 @@
 ##############################################################################
-# title         : A2 Scenario Potato Growing Seasons.R;
+# title         : EcoCrop A2 Scenario Potato Growing Seasons.R;
 # purpose       : create global potato growing seasons using Ecocrop with A2 
 #               : climate emission scenario data;
 # producer      : prepared by R. Hijmans and A. Sparks;
