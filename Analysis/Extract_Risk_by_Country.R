@@ -17,20 +17,23 @@ library(reshape)
 ####### End Libraries ######
 
 ##### Begin data import and cleanup #####
-# Tempfile for download of FAO data
-tf <- tempfile()
 
 # Countries for mapping and extracting blight risk by country from rworldmap
 data(countryExData) 
 
+## This script assumes that you have previously run CRU CL2.0 SimCastMeta_Global_Late_Blight_Risk.R and A2 2050 SimCastMeta_Global_Late_Blight_Risk.R
+## If you have not, run both of these script files to generate the necessary blight risk prediction tif files
 ##!!!!!!!!!! Use only ONE of the following rasters at a time !!!!!!!!!!##
 ## use only SUSCEPTIBLE blight units ##
 CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
+A2.risk <- raster("Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Prediction.tif")
 
-## or use RESISTANT Blight Units ##
+## or use only RESISTANT Blight Units ##
 CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
+A2.risk <- raster("Cache/Global Blight Risk Maps/A2_SimCastMeta_Resistant_Prediction.tif")
 
 ## Download crop production data from FAO and create dataframe of only potato production data
+tf <- tempfile() # Tempfile for download of FAO data
 download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", tf) # this is a large file
 FAO <- read.csv(unzip(tf), stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
 file.remove("Production_Crops_E_All_Data.csv") # clean up the unzipped CSV file
@@ -84,9 +87,11 @@ row.names(A2.values) <- row.names(wrld) # assign row names to values so that we 
 
 ## Change
 change <- A2.values - CRU.values
+names(change) <- "change"
 
 # Bind the data frames together in a spatial object
-wrld <- spCbind(wrld, CRU.values, A2.values, change) 
+blight <- cbind(CRU.values, A2.values, change)
+wrld <- spCbind(wrld, blight)
 
 #### End data extraction and munging ####
 
@@ -97,8 +102,8 @@ mapCountryData(wrld, nameColumnToPlot = "change", mapTitle = "Change in Average 
 
 ### Graphs
 ## Create a new dataframe for ggplot2 to use to graph
-averages <- na.omit(data.frame(wrld$NAME, wrld$Yield, wrld$AreaHarvested, wrld$CRU.BlightRisk))
-names(averages) <- c("Country", "Yield", "HaPotato", "BlightRisk")
+averages <- na.omit(data.frame(wrld$NAME, wrld$Yield, wrld$AreaHarvested, wrld$CRU.BlightRisk, wrld$A2.BlightRisk, wrld$change))
+names(averages) <- c("Country", "Yield", "HaPotato", "CRU BlightRisk", "A2 BlightRisk", "Change")
 
 ## Sort the data frame by potato producers
 sorted <- averages[order(averages$HaPotato), ] # Sort by hectares of potato
@@ -117,15 +122,15 @@ ggplot(top10, aes(x = HaPotato, y = BlightRisk, size = Yield/10000, label = Coun
 
 ### Generate a bar chart of the ten countries with the highest blight risks
 ## Sort the data frame by late blight risk ranking
-sorted.blight <- averages[order(averages$BlightRisk), ] # Sort by hectares of potato
+sorted.blight <- averages[order(averages$Change), ] # Sort by change in blight risk
 top10.blight <- data.frame(tail(sorted.blight, 10)) # Create data frame of top ten growing countries for graph
-top10.blight$Country <- factor(top10.blight$Country, levels = top10.blight$Country[order(top10.blight$BlightRisk)]) # Order by blight units, not country
+top10.blight$Country <- factor(top10.blight$Country, levels = top10.blight$Country[order(top10.blight$Change)]) # Order by blight units, not country
 
 top10.blight # Top ten countries by highest risk for late blight
 
-### Generate bar chart of blight units for Top 10 countries ranked by blight risk
-ggplot(top10.blight, aes(x = factor(Country), y = BlightRisk)) +
-  geom_bar(stat = "identity", aes(fill = BlightRisk)) +
+#### Generate bar chart of blight units for Top 10 countries ranked by blight risk ####
+ggplot(top10.blight, aes(x = factor(Country), y = Change)) +
+  geom_bar(stat = "identity", aes(fill = Change)) +
   xlab("Country") +
   scale_fill_gradient("Blight Units") +
   ylab("Blight Units") +

@@ -1,11 +1,11 @@
 ##############################################################################
-# title         : A2 2050 SimCastMeta_Global_Late_Blight_Risk.R;
-# purpose       : create global potato late blight risk using SimCastMeta with A2 2050 data;
+# title         : CRU CL2.0 SimCastMeta_Global_Late_Blight_Risk.R;
+# purpose       : create global potato late blight risk using SimCastMeta with CRU CL2.0 data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, June 2014;
-# inputs        : A2 2050 time-slice climate data;
+# last update   : in Los Baños, Laguna, Jun. 2014;
+# inputs        : CRU CL2.0 Climate Data from UEA;
 # outputs       : ;
-# remarks 1     : EcoCrop A2 2050 Potato Growing Seasons.R must be run to generate the planting
+# remarks 1     : EcoCrop CRU CL2.0 Potato Growing Seasons.R must be run to generate the planting
 #                 date raster before this script is used. If it is not, the EcoCrop planting date
 #                 script will automatically run and generate the necessary file;
 # Licence:      : GPL2;
@@ -97,6 +97,19 @@ for(j in 1:12){
   a <- mean(x) # take average blight unit accumulation for growing season
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
+
+if(max(blight.units$Blight == 6.39)){ # check to see whether we've used resistant or susceptible blight units for this analysis and assign new file name accordingly
+  writeRaster(global.blight.risk, "Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible.tif",
+              format = "GTiff", dataType = "INT2S", 
+              options = c("COMPRESS=LZW"), 
+              overwrite = TRUE)
+} else
+  writeRaster(global.blight.risk, "Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant.tif",
+              format = "GTiff", dataType = "INT2S", 
+              options = c("COMPRESS=LZW"), 
+              overwrite = TRUE)
+
+gc()
 
 plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season\n1975", xlab = "Longitude", ylab = "Latitude",
      legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))

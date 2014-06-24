@@ -45,7 +45,6 @@ prf <- run.ecocrop(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack,
                    filename = "Cache/Planting Seasons/CRUCL2.0_PRF.tif", 
                    format = "GTiff", dataType = "INT2S", 
                    options = c("COMPRESS=LZW"), 
-                   NAFlag = -9999,
                    overwrite = TRUE) # Rainfed potato
 
 pir <- run.ecocrop(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack, 
@@ -53,7 +52,6 @@ pir <- run.ecocrop(pot, tmn.stack, tmx.stack, tmp.stack, pre.stack,
                    filename = "Cache/Planting Seasons/CRUCL2.0_PIR.tif",
                    format = "GTiff", dataType = "INT2S", 
                    options = c("COMPRESS=LZW"), 
-                   NAFlag = -9999,
                    overwrite = TRUE) # Irrigated potato
 
 # Read raster objects of predicted planting dates from disk
@@ -63,7 +61,6 @@ names(poplant.prf) <- "Ecocrop Rainfed Planting Dates for 1975"
 writeRaster(poplant.prf, "Cache/Planting Seasons/CRUCL2.0_PRF.tif",
             format = "GTiff", dataType = "INT2S", 
             options = c("COMPRESS=LZW"), 
-            NAFlag = -9999,
             overwrite = TRUE)
 
 poplant.pir <- raster("Cache/Planting Seasons/CRUCL2.0_PIR.tif") # irrigated potato planting date raster
@@ -72,7 +69,6 @@ names(poplant.pir) <- "Ecocrop Irrigated Planting Dates for 1975"
 writeRaster(poplant.pir, "Cache/Planting Seasons/CRUCL2.0_PIR.tif",
             format = "GTiff", dataType = "INT2S", 
             options = c("COMPRESS=LZW"), 
-            NAFlag = -9999,
             overwrite = TRUE)
 
 #### Take both rasters, combine them, use irrigated potato where rainfed is NA ####
@@ -89,7 +85,6 @@ names(com) <- "Ecocrop Planting Dates for 1975"
 writeRaster(com, "Cache/Planting Seasons/CRUCL2.0_Combined.tif",
             format = "GTiff", dataType = "INT2S", 
             options = c("COMPRESS=LZW"), 
-            NAFlag = -9999,
             overwrite = TRUE)
 
 #### Plot the predicted planting dates ####

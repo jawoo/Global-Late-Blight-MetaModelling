@@ -51,12 +51,12 @@ SimCastMeta <- gam(Blight~s(C, RH, k = 150), data = model.data)
 reh.stack <- stack(list.files(path = "Data/A2 Relative Humidity", pattern = "a2rh50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load relative humidity tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
 tmp.stack <- stack(list.files(path = "Data/A2 Average Temperature", pattern = "a2tmp50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load average temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
 
-#### Mask the CRU CL2.0 stacks with poplant raster (already masked using MIRCA production areas in EcoCrop script);
+#### Mask the A2 stacks with poplant raster (already masked using MIRCA production areas in EcoCrop script);
 #### to reduce the run time of SimCastMeta ####
 reh.stack <- mask(reh.stack, poplant)
 tmp.stack <- mask(tmp.stack, poplant)
 
-#### Run the model using CRU CL2.0 Data ####
+#### Run the model using A2 Data ####
 for(i in 1:12){
   x <- stack(tmp.stack[[i]], reh.stack[[i]]) # Take month raster layers from the year T and RH and add them to a T/RH stack to run the model
   names(x) <- c("C", "RH") # Rename layers in stack to match model construction
@@ -94,6 +94,17 @@ for(j in 1:12){
   a <- mean(x) # take average blight unit accumulation for growing season
   global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
+
+if(max(blight.units$Blight == 6.39)){ # check to see whether we've used resistant or susceptible blight units for this analysis and assign new file name accordingly
+  writeRaster(global.blight.risk, "Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Prediction.tif",
+              format = "GTiff", dataType = "INT2S", 
+              options = c("COMPRESS=LZW"), 
+              overwrite = TRUE)
+} else
+  writeRaster(global.blight.risk, "Cache/Global Blight Risk Maps/A2_SimCastMeta_Resistant_Prediction.tif",
+              format = "GTiff", dataType = "INT2S", 
+              options = c("COMPRESS=LZW"), 
+              overwrite = TRUE)
 
 plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season\n2050", xlab = "Longitude", ylab = "Latitude",
      legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
