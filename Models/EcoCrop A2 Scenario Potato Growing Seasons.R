@@ -17,14 +17,14 @@ library(dismo)
 
 #### Load functions ####
 source("Functions/run_ecocrop.R")
-source("Functions/A2_Data_Download.R")
+source("Functions/Get_A2_Data.R")
 source("Functions/Download_MIRCA.R")
 #### End Functions ####
 
 #### Begin data import ####
 
 download.MIRCA() # function will download and unzip MIRCA data or simply load if available in Data
-download.a2.data() # download A2 climate data files from Figshare. This will take a while.
+download.A2.data() # download A2 climate data files from Figshare. This will take a while.
 
 ## sort out the different time-slices, most analysis was with 2050 only so it is the only one featured here. Feel free to use the other two time-slices in the same fashion
 pre.stack <- stack(list.files(path = "Data/A2 Precipitation", pattern = "a2pr50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load precipitation tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
