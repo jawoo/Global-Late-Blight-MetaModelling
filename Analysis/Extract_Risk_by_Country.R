@@ -69,24 +69,35 @@ FAO <- subset(FAO, Country != "R\xe9union") # Remove Reúnion from the data
 ##### Data extraction and munging #####
 wrld <- joinCountryData2Map(FAO, countryExData, joinCode = "NAME", nameJoinColumn = "Country", verbose = TRUE)
 
-values <- extract(CRUCL2.0.risk, wrld) # Extract the values of the raster object by country polygons in shape file
-values <- data.frame(unlist(lapply(values, FUN = mean, na.rm = TRUE))) # unlist and generate mean values for each polygon
-names(values) <- "BlightRisk" # assign "BlightRisk" name to column
-row.names(values) <- row.names(wrld) # assign row names to values so that we can use spCbind to merge with wrld
+## CRU Blight Units
+CRU.values <- extract(CRUCL2.0.risk, wrld) # Extract the values of the raster object by country polygons in shape file
+CRU.values <- data.frame(unlist(lapply(CRU.values, FUN = mean, na.rm = TRUE))) # unlist and generate mean values for each polygon
+names(CRU.values) <- "CRU BlightRisk" # assign "BlightRisk" name to column
+row.names(CRU.values) <- row.names(wrld) # assign row names to values so that we can use spCbind to merge with wrld
 row.names(wrld) <- row.names(wrld) # for some reason the above results in row names that don't match, this fixes that
 
-wrld <- spCbind(wrld, values) # Bind the data frames together in a spatial object
+## A2 Blight Units
+A2.values <- extract(A2.risk, wrld) # Extract the values of the raster object by country polygons in shape file
+A2.values <- data.frame(unlist(lapply(A2.values, FUN = mean, na.rm = TRUE))) # unlist and generate mean values for each polygon
+names(A2.values) <- "A2 BlightRisk" # assign "BlightRisk" name to column
+row.names(A2.values) <- row.names(wrld) # assign row names to values so that we can use spCbind to merge with wrld
+
+## Change
+change <- A2.values - CRU.values
+
+# Bind the data frames together in a spatial object
+wrld <- spCbind(wrld, CRU.values, A2.values, change) 
 
 #### End data extraction and munging ####
 
 ##### Data visualization #####
 ### Maps
 ## Plot average global blight risk by countries
-mapCountryData(wrld, nameColumnToPlot = "BlightRisk", mapTitle = "Average Country Blight Units\nor Relative Risk Rank", catMethod = "pretty")
+mapCountryData(wrld, nameColumnToPlot = "change", mapTitle = "Change in Average Country Blight Units\nor Relative Risk Rank\n1975 to A2 2050", catMethod = "pretty")
 
 ### Graphs
 ## Create a new dataframe for ggplot2 to use to graph
-averages <- na.omit(data.frame(wrld$NAME, wrld$Yield, wrld$AreaHarvested, wrld$BlightRisk))
+averages <- na.omit(data.frame(wrld$NAME, wrld$Yield, wrld$AreaHarvested, wrld$CRU.BlightRisk))
 names(averages) <- c("Country", "Yield", "HaPotato", "BlightRisk")
 
 ## Sort the data frame by potato producers
