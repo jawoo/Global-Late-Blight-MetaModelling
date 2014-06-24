@@ -16,8 +16,11 @@ library(mgcv)
 library(raster)
 #### End Libraries ####
 
+#### Load functions ####
+source("Functions/Get_A2_Data.R")
+
 #### Begin data import ####
-download.a2.data() # download A2 climate data files from Figshare. This will take a while if you've not already done it
+download.A2.data() # download A2 climate data files from Figshare. This will take a while if you've not already done it
 
 if(file.exists("Cache/Planting Seasons/A2_2050_Combined.tif") != TRUE){
   source("Models/Ecocrop A2 Scenario Potato Growing Seasons.R")} else

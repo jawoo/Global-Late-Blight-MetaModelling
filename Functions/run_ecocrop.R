@@ -2,8 +2,8 @@
 # title         : Run_EcoCrop.R;
 # purpose       : function to run the EcoCrop model using a raster stack;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Los Baños, Philippines, June 2014;
-# inputs        : raster stacks of avg/min/max temperature, precipitation;
+# last update   : in Los Baños, Philippines, Jun. 2014;
+# inputs        : EcoCrop planting date predictions;
 # outputs       : na;
 # remarks 1     : ;
 # Licence:      : GPL2;

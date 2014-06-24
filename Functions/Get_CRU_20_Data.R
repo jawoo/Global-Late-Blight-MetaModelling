@@ -4,7 +4,7 @@
 # producer      : prepared by A. Sparks;
 # last update   : in Los Baños, Laguna, Jun. 2014;
 # inputs        : CRU CL2.0 Climate data;
-# outputs       : ;
+# outputs       : Raster stacks of CRU CL2.0 weather data;
 # remarks 1     : a standalone version exists as a gist here: https://gist.github.com/adamhsparks/11284393;
 # Licence:      : GPL2;
 ##############################################################################
