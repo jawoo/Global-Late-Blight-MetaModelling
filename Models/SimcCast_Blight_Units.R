@@ -5,7 +5,7 @@
 #                 Potato Late Blight Management in the Toluca Valley: Field Validation of SimCast Modified for 
 #                 Cultivars with High Field Resistance. Plant Disease, 86, 1163–1168.;
 # producer      : prepared by A. Sparks and K. Garrett;
-# last update   : in Los Baños, Laguna, Philippines, June 2014;
+# last update   : in Los Baños, Laguna, Philippines, Jun. 2014;
 # inputs        : HUSWO weather data to calculate blight units for each weather station in the dataset;
 # outputs       : blight unit values, averaged hourly weather data to daily for each weather station;
 # remarks 1     : cultivar resistance values are changed on line 134;
@@ -24,8 +24,7 @@ res = "S"
 res = "MS"
 res = "R"
   
-# Run this function to genearate blight unit calculations
-# for the HUSWO data set
+# Run this function to genearate blight unit calculations for the HUSWO data set
 DailyBlightUnitFiles <- function(){
   files <- list.files(pattern  =  ".txt$")
   for(i in files){
