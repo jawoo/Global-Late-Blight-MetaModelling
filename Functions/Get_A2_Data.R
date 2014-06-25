@@ -17,22 +17,22 @@ download.A2.data <- function(){
   ## First check to see if the files exist, if they do, then we go to the next portion, if not we download them.
   # As this download takes a while, the files will be stored in "Data" directory, not necessary to download after first time
   if(length(list.files(path = "Data/A2_Precipitation")) != 36){
-    download.file("http://files.figshare.com/1547444/A2_Precipitation.zip", tf) # Download A2 precipitation data geotiff files
+    download.file("http://files.figshare.com/1562952/A2_Precipitation.zip", tf) # Download A2 precipitation data geotiff files
     unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 precipitation files to "Data/A2 Precipitation" directory
   }
   
   if(length(list.files(path = "Data/A2 Minimum Temperature/")) != 36){
-    download.file("http://files.figshare.com/1545376/A2_Minimum_Temperature.zip", tf) # Download A2 minimum temperature data geotiff files
+    download.file("http://files.figshare.com/1562951/A2_Minimum_Temperature.zipp", tf) # Download A2 minimum temperature data geotiff files
     unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 minimum temperature files to "Data/A2 Minimum Temperature" directory
   }
   
   if(length(list.files(path = "Data/A2 Maximum Temperature")) != 36){
-    download.file("http://files.figshare.com/1545368/A2_Maximum_Temperature.zip", tf) # Download A2 maximum temperature data geotiff files
+    download.file("http://files.figshare.com/1562950/A2_Maximum_Temperature.zip", tf) # Download A2 maximum temperature data geotiff files
     unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 maximum temperature files to "Data/A2 Maximum Temperature" directory
   }
   
   if(length(list.files(path = "Data/A2 Average Temperature")) != 36){
-    download.file("http://files.figshare.com/1545357/A2_Average_Temperature.zip", tf) # Download A2 maximum temperature data geotiff files
+    download.file("http://files.figshare.com/1562942/A2_Average_Temperature.zip", tf) # Download A2 maximum temperature data geotiff files
     unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 maximum temperature files to "Data/A2 Maximum Temperature" directory
   }
   

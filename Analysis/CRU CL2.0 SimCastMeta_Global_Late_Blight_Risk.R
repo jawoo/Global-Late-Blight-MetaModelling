@@ -109,8 +109,6 @@ if(max(blight.units$Blight == 6.39)){ # check to see whether we've used resistan
               options = c("COMPRESS=LZW"), 
               overwrite = TRUE)
 
-gc()
-
 plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season\n1975", xlab = "Longitude", ylab = "Latitude",
      legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
