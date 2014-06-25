@@ -22,8 +22,12 @@ source("Functions/Download_MIRCA.R")
 #### End Functions ####
 
 #### Begin data import ####
+if(file.exists("Data/MIRCA_Poplant.grd") != TRUE){
+  download.MIRCA() # function will download and unzip MIRCA data or simply load if available in Data
+} else { # The file already exists and we save time by just reading into R
+  MIRCA <- raster("Data/MIRCA_Poplant.grd")
+}
 
-download.MIRCA() # function will download and unzip MIRCA data or simply load if available in Data
 download.A2.data() # download A2 climate data files from Figshare. This will take a while.
 
 ## sort out the different time-slices, most analysis was with 2050 only so it is the only one featured here. Feel free to use the other two time-slices in the same fashion
@@ -96,3 +100,4 @@ plot(com, main = "Potato planting dates as predicted by EcoCrop", xlab = "Longit
      legend.args = list(text = "Month", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos
+

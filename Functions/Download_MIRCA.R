@@ -13,7 +13,6 @@
 download.MIRCA <- function(){
   ## Check to see if the file has already been downloaded and uznipped, if so don't waste time ##
   ## downloading, just load it ##
-  if(file.exists("Data/MIRCA_Poplant.grd") != TRUE){
     url.IRC <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz"
     url.RFC <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/harvested_area_grids/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz"
     url.Area <- "ftp://ftp.rz.uni-frankfurt.de/pub/uni-frankfurt/physische_geographie/hydrologie/public/data/MIRCA2000/cell_area_grid/cell_area_ha_05mn.asc.gz"
@@ -45,9 +44,6 @@ download.MIRCA <- function(){
     file.remove("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz")
     file.remove("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
     file.remove("Data/cell_area_ha_05mn.asc.gz")
-    
-  } else # The file already exists and we save time by just reading into R
-    MIRCA <- raster("Data/MIRCA_Poplant.grd")
 }
 
 #eos
