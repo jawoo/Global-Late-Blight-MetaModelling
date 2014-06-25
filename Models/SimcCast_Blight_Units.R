@@ -19,6 +19,11 @@
 # select working directory where weather data is located
 setwd("")
 
+# Select the resistance level that should be run, also rename filename on line 38 appropriately
+res = "S"
+res = "MS"
+res = "R"
+  
 # Run this function to genearate blight unit calculations
 # for the HUSWO data set
 DailyBlightUnitFiles <- function(){
@@ -30,7 +35,7 @@ DailyBlightUnitFiles <- function(){
     Date <- paste(blight.calcs$oYear, blight.calcs$oMonth, blight.calcs$oDay, sep = "-")
     weather.data <- cbind(Date, blight.calcs)
     weather.data <- subset(weather.data, oYear >= 1)
-    filename <- paste(i, "moderately.susceptible.dayR", sep = ".")
+    filename <- paste(i, "susceptible.dayR", sep = ".")
     write.table(weather.data, file = filename, sep = "\t", col.names = FALSE, eol = "\n", append = FALSE)
   }
 }

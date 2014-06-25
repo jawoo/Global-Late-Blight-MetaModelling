@@ -23,7 +23,13 @@ source("Functions/create_stack.R")
 #### Begin data import ####
 CRU.data <- CRU_Growing_Season_DL() # Function that downloads CRU mean temperature, diurnal temperature difference and;
                                     # precipitation data and converts into R dataframe objects, returns a list
-source("Functions/DownloadMIRCA.R") # Script will download and unzip MIRCA data or simply load if available in /Data
+
+if(file.exists("Data/MIRCA_Poplant.grd") != TRUE){
+  download.MIRCA() # function will download and unzip MIRCA data or simply load if available in Data
+} else { # The file already exists and we save time by just reading into R
+  MIRCA <- raster("Data/MIRCA_Poplant.grd")
+}
+
 #### End data import ####
 
 ## Function that generates raster stacks of the CRU CL2.0 data
