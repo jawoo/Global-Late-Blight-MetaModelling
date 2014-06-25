@@ -27,7 +27,7 @@ download.MIRCA() # function will download and unzip MIRCA data or simply load if
 download.A2.data() # download A2 climate data files from Figshare. This will take a while.
 
 ## sort out the different time-slices, most analysis was with 2050 only so it is the only one featured here. Feel free to use the other two time-slices in the same fashion
-pre.stack <- stack(list.files(path = "Data/A2 Precipitation", pattern = "a2pr50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load precipitation tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
+pre.stack <- stack(list.files(path = "Data/A2_Precipitation", pattern = "a2pr50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load precipitation tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
 tmn.stack <- stack(list.files(path = "Data/A2 Minimum Temperature", pattern = "a2tn50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load minimum temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
 tmx.stack <- stack(list.files(path = "Data/A2 Maximum Temperature", pattern = "a2tx50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load maximum temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
 tmp.stack <- stack(list.files(path = "Data/A2 Average Temperature", pattern = "a2tmp50[[:digit:]]{2}.tif", full.names = TRUE))/10 # Load average temperature tif files for 2050 time-slice only, change "50" to "20" or "90" for other time slice
