@@ -1,5 +1,5 @@
 ##############################################################################
-# title         : Extract_Risk_by_Country.R;
+# title         : Extract_Visualise_Risk_by_Country.R;
 # purpose       : Extract blight units for countries growing potato;
 # producer      : prepared by A. Sparks;
 # last update   : in IRRI, Los Baños, Jun. 2014;
@@ -113,7 +113,7 @@ top10 # View the top 10 potato producing countries by Ha production and correspo
 
 ### Generate bubble chart of blight units, potato yields and hectarage of Top 10 potato producing countries
 ## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot
-ggplot(top10, aes(x = HaPotato, y = BlightRisk, size = Yield/10000, label = Country)) +
+ggplot(top10, aes(x = HaPotato, y = CRU.BlightRisk, size = Yield/10000, label = Country)) +
   geom_point(colour = "white", fill = "red", shape = 21, alpha = 0.5) + 
   scale_size_area(max_size = 30, "Yield (T/Ha)") +
   xlab("Potato production (Ha)") +
