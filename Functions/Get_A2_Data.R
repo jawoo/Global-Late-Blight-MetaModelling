@@ -22,7 +22,7 @@ download.A2.data <- function(){
   }
   
   if(length(list.files(path = "Data/A2 Minimum Temperature/")) != 36){
-    download.file("http://files.figshare.com/1562951/A2_Minimum_Temperature.zipp", tf) # Download A2 minimum temperature data geotiff files
+    download.file("http://files.figshare.com/1562951/A2_Minimum_Temperature.zip", tf) # Download A2 minimum temperature data geotiff files
     unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 minimum temperature files to "Data/A2 Minimum Temperature" directory
   }
   
