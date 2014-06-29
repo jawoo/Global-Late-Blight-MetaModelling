@@ -39,8 +39,8 @@ download.MIRCA <- function(){
     
     MIRCA[MIRCA <= 0] <- NA #reclassify anything below 0% area to NA
     MIRCA <- crop(MIRCA, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
-    writeRaster(MIRCA, 'Data/MIRCA_Poplant.grd', overwrite = TRUE)
-    
+    writeRaster(MIRCA, 'Data/MIRCA_Poplant.tif', overwrite = TRUE, format = "GTiff", c("COMPRESS=LZW"))
+
     file.remove("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz")
     file.remove("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
     file.remove("Data/cell_area_ha_05mn.asc.gz")
