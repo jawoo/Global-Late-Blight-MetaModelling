@@ -22,9 +22,10 @@ source("Functions/Get_A2_Data.R")
 #### Begin data import ####
 download.A2.data() # download A2 climate data files from Figshare. This will take a while if you've not already done it
 
-if(file.exists("Cache/Planting Seasons/A2_2050_Combined.tif") != TRUE){
-  source("Models/Ecocrop A2 Scenario Potato Growing Seasons.R")} else
-    poplant <- raster("Cache/Planting Seasons/A2_2050_Combined.tif")
+if(file.exists("Cache/Planting Seasons/A2_2050_Combined.tif") == TRUE){
+  poplant <- raster("Cache/Planting Seasons/A2_2050_Combined.tif")
+  } else source("Models/Ecocrop A2 Scenario Potato Growing Seasons.R")
+    
 
 ## Load blight units calculated by SimCast, used to create the SimCastMeta GAM
 #!!!!! Select ONLY ONE, resistant or susceptible blight units for the model run !!!!!#

@@ -17,7 +17,7 @@ download.A2.data <- function(){
   ## First check to see if the files exist, if they do, then we go to the next portion, if not we download them.
   # As this download takes a while, the files will be stored in "Data" directory, not necessary to download after first time
   if(length(list.files(path = "Data/A2 Precipitation")) != 36){
-    download.file("http://files.figshare.com/1571381/A2_Precipitation.zip", tf) # Download A2 precipitation data geotiff files
+    download.file("http://files.figshare.com/1571643/A2_Precipitation.zip", tf) # Download A2 precipitation data geotiff files
     unzip(tf, exdir = "Data", overwrite = TRUE) # Unzip A2 precipitation files to "Data/A2 Precipitation" directory
   }
   
