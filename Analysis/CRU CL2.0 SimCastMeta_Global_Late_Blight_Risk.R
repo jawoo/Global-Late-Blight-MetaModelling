@@ -67,6 +67,7 @@ for(i in 1:12){
   y[y<0] = 0 # Set the predicted blight units falling below zero equal to zero
   
   if(i == 1){z <- y} else z <- stack(z, y)
+  i <- i+1
   }
 
 #### Take raster stack "z" from above with monthly blight unit estimates
