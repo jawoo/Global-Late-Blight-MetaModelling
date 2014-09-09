@@ -4,7 +4,7 @@
 # producer      : prepared by A. Sparks;
 # last update   : in Los Baños, Laguna, September 2014;
 # inputs        : A2 2050 time-slice climate data;
-# outputs       : ;
+# outputs       : Predictions of late blight severity from SimCastMeta for the A2 scenario, 2050 time-slice;
 # remarks 1     : EcoCrop A2 2050 Potato Growing Seasons.R must be run to generate the planting
 #                 date raster before this script is used. If it is not, the EcoCrop planting date
 #                 script will automatically run and generate the necessary file;
