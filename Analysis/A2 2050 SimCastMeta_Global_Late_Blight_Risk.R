@@ -2,7 +2,7 @@
 # title         : A2 2050 SimCastMeta_Global_Late_Blight_Risk.R;
 # purpose       : create global potato late blight risk using SimCastMeta with A2 2050 data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, June 2014;
+# last update   : in Los Baños, Laguna, September 2014;
 # inputs        : A2 2050 time-slice climate data;
 # outputs       : ;
 # remarks 1     : EcoCrop A2 2050 Potato Growing Seasons.R must be run to generate the planting
@@ -60,43 +60,72 @@ tmp.stack <- mask(tmp.stack, poplant)
 #### Run the model using A2 Data ####
 for(i in 1:12){
   x <- stack(tmp.stack[[i]], reh.stack[[i]]) # Take month raster layers from the year T and RH and add them to a T/RH stack to run the model
-  names(x) <- c("C", "RH") # Rename layers in stack to match model construction
-  y <- predict(x, SimCastMeta, progress = "text") # Run GAM with Raster Stack
+  names(x) <- c("C", "RH")
+  # Run GAM with Raster Stack
+  y <- predict(x, SimCastMeta, progress = "text")
   y[y<0] = 0 # Set the predicted blight units falling below zero equal to zero
-  
+  names(y) <- paste(i)
   if(i == 1){z <- y} else z <- stack(z, y)
   i <- i+1
-  }
-
-#### Take raster stack "z" from above with monthly blight unit estimates
-for(j in 1:12){
-  if(j == 1){
-    w <- reclassify(poplant, c(01, 12, NA))
-    x <- stack(z[[j]], z[[j+1]], z[[j+2]]) # stack the three months of the first growing season
-    x <- mask(x, w) # mask with suitable potato planting date
-    y <- mean(x) # take average blight unit accumulation for growing season
-  } else if(j > 1 && j < 11){
-    w <- reclassify(poplant, c(0, paste("0", j-1, sep = ""), NA))
-    w <- reclassify(w, c(paste("0", j, sep = ""), 12, NA))
-    x <- stack(z[[j]], z[[j+1]], z[[j+2]]) # stack the three months of the first growing season
-    x <- mask(x, w) # mask with suitable potato planting date
-    a <- mean(x) # take average blight unit accumulation for growing season
-    y <- cover(y, a) # replace NAs in raster file with new planting season blight unit values
-  } else if(j == 11){
-    w <- reclassify(poplant, c(0, 10, NA))
-    w <- reclassify(w, c(11, 12, NA))
-    x <- stack(z[[11]], z[[12]], z[[1]]) # stack the three months of the first growing season
-    x <- mask(x, w) # mask with suitable potato planting date
-    a <- mean(x) # take average blight unit accumulation for growing season
-    y <- cover(y, a) # replace NAs in raster file with new planting season blight unit values
-  }  else
-  w <- reclassify(poplant, c(0, 11, NA))
-  x <- stack(z[[12]], z[[1]], z[[2]]) # stack the three months of the first growing season
-  x <- mask(x, w) # mask with suitable potato planting date
-  a <- mean(x) # take average blight unit accumulation for growing season
-  global.blight.risk <- cover(y, a) # replace NAs in raster file with new planting season blight unit values, final object
 }
 
+#### Create new raster objects to mask out the appropriate growing seasons for blight risk calculation
+x.01 <- reclassify(poplant, c(01, 12, NA)) # January mask
+
+x.02 <- reclassify(poplant, c(0, 01, NA)) # February mask
+x.02 <- reclassify(x.02, c(02, 12, NA))
+
+x.03 <- reclassify(poplant, c(0, 02, NA)) # March mask
+x.03 <- reclassify(x.03, c(03, 12, NA))
+
+x.04 <- reclassify(poplant, c(0, 03, NA)) # April mask
+x.04 <- reclassify(x.04, c(04, 12, NA))
+
+x.05 <- reclassify(poplant, c(0, 04, NA)) # May mask
+x.05 <- reclassify(x.05, c(05, 12, NA))
+
+x.06 <- reclassify(poplant, c(0, 05, NA)) # June mask
+x.06 <- reclassify(x.06, c(06, 12, NA))
+
+x.07 <- reclassify(poplant, c(0, 06, NA)) # July mask
+x.07 <- reclassify(x.07, c(07, 12, NA))
+
+x.08 <- reclassify(poplant, c(0, 07, NA)) # August mask
+x.08 <- reclassify(x.08, c(08, 12, NA))
+
+x.09 <- reclassify(poplant, c(0, 08, NA)) # September mask
+x.09 <- reclassify(x.09, c(09, 12, NA))
+
+x.10 <- reclassify(poplant, c(0, 09, NA)) # October mask
+x.10 <- reclassify(x.10, c(10, 12, NA))
+
+x.11 <- reclassify(poplant, c(0, 10, NA)) # November mask
+x.11 <- reclassify(x.11, c(11, 12, NA))
+
+x.12 <- reclassify(poplant, c(0, 11, NA)) # December mask
+
+#### Mask blight units and then calculate the proper blight units for a three month growing season
+jan <- mean(mask(z[[1:3]], x.01))
+feb <- mask(mean(z[[2:4]]), x.02)
+mar <- mask(mean(z[[3:5]]), x.03)
+apr <- mask(mean(z[[4:6]]), x.04)
+may <- mask(mean(z[[5:7]]), x.05)
+jun <- mask(mean(z[[6:8]]), x.06)
+jul <- mask(mean(z[[7:9]]), x.07)
+aug <- mask(mean(z[[8:10]]), x.08)
+sep <- mask(mean(z[[9:11]]), x.09)
+oct <- mask(mean(z[[10:12]]), x.10)
+nov <- mask(mean(z[[c(1, 11:12)]]), x.11)
+dec <- mask(mean(z[[c(1:2, 12)]]), x.12)
+
+##### merge growing season averages back into one raster object
+global.blight.risk <- merge(jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec) 
+
+#### Visualise the results
+plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season\n2050", xlab = "Longitude", ylab = "Latitude",
+     legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
+
+#### Save the results for further use or analysis
 if(max(blight.units$Blight == 6.39)){ # check to see whether we've used resistant or susceptible blight units for this analysis and assign new file name accordingly
   writeRaster(global.blight.risk, "Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Prediction.tif",
               format = "GTiff", dataType = "INT2S", 
@@ -107,8 +136,5 @@ if(max(blight.units$Blight == 6.39)){ # check to see whether we've used resistan
               format = "GTiff", dataType = "INT2S", 
               options = c("COMPRESS=LZW"), 
               overwrite = TRUE)
-
-plot(global.blight.risk, main = "Average Daily Blight Unit Accumulation\nPer Three Month Growing Season\n2050", xlab = "Longitude", ylab = "Latitude",
-     legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
 #eos

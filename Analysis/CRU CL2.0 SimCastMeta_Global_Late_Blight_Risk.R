@@ -59,16 +59,18 @@ tmp.stack <- create.stack(CRU.data$tmp)
 reh.stack <- mask(reh.stack, poplant)
 tmp.stack <- mask(tmp.stack, poplant)
 
-#### Run the model using CRU CL2.0 Data ####
 for(i in 1:12){
   x <- stack(tmp.stack[[i]], reh.stack[[i]]) # Take month raster layers from the year T and RH and add them to a T/RH stack to run the model
-  names(x) <- c("C", "RH") # Rename layers in stack to match model construction
-  y <- predict(x, SimCastMeta, progress = "text") # Run GAM with Raster Stack
-  y[y<0] = 0 # Set the predicted blight units falling below zero equal to zero
-  
-  if(i == 1){z <- y} else z <- stack(z, y)
+  names(x) <- c("C", "RH")
+  # Run GAM with Raster Stack
+  x <- predict(x, simCastMeta, progress = "text")
+  x[x<0] = 0 # Set the predicted blight units falling below zero equal to zero
+  filename <- paste("Cache/Predictions/", i, "CRU.grd", sep = "")
+  writeRaster(Y, filename, overwrite = TRUE)
   i <- i+1
-  }
+}
+
+
 
 #### Take raster stack "z" from above with monthly blight unit estimates
 for(j in 1:12){
