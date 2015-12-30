@@ -43,7 +43,7 @@ NE <- readOGR(dsn = ".", layer = "ne_50m_admin_0_countries")
 
 ## Download crop production data from FAO and create dataframe of only potato production data
 ## If you have already run this script, the script will skip this step
-if(!file.exists(paste(getwd(), "Production_Crops_E_All_Data.csv", sep = ""))) {
+if(!file.exists(paste(getwd(), "/Production_Crops_E_All_Data.csv", sep = ""))) {
   download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
                 tf.fao, 
                 mode = "wb") # this is a large file
