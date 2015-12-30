@@ -1,5 +1,5 @@
 ##############################################################################
-# title         : Extract_Risk_by_Country.R;
+# title         : Extract_Map_and_Visualise_Risk_by_Country.R;
 # purpose       : Extract blight units for countries growing potato;
 # producer      : prepared by A. Sparks;
 # last update   : in IRRI, Los Baños, Dec 2015;
@@ -30,7 +30,8 @@ CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susc
 ## or use RESISTANT Blight Units ##
 #CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
 
-## Download Natural Earth 1:50 Scale Data for extracting data from FAO ##
+
+## Download Natural Earth 1:50 Scale Data for extracting data from FAO and global map ##
 # If you've already run this script, it will skip this step and just read the shp file
 if(!file.exists(paste(getwd(), "/ne_50m_admin_0_countries.shp", sep = ""))) {
   download.file("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip", 
@@ -98,9 +99,19 @@ FAO[, 2][FAO[, 2] == 0] <- "France"
 # Remove Reúnion from the data
 FAO <- subset(FAO, Country != "R\xe9union")
 
+
+## Download Nepal GADM data to generate ecosystem map ##
+nepal <- getData("GADM", country = "NPL", level = 0)
+
+
 ##### End of data import and cleanup #####
 
 ##### Data extraction and munging #####
+## Colombia and Ecuador map
+raster.df <- crop(CRUCL2.0.risk, nepal) # crop and mask the raster file
+raster.df <- mask(raster.df, nepal)
+raster.df <- data.frame(rasterToPoints(raster.df)) # convert raster object to dataframe for ggplot2
+
 NE@data <- left_join(NE@data, FAO, by = c("admin" = "Country"))
 
 values <- extract(CRUCL2.0.risk, NE, fun = mean, na.rm = TRUE, sp = TRUE) # Extract the values of the raster object by country polygons in shape file and add them to a new spatial object
@@ -144,21 +155,43 @@ top10.blight$Country <- factor(top10.blight$Country, levels = top10.blight$Count
 # Mean blight units by country
 ggplot() +
   geom_polygon(data = values.f, 
-               aes(x = long, y = lat, group = group, 
+               aes(x = long, 
+                   y = lat, 
+                   group = group, 
                    fill = cuts), 
-               color = "black", size = 0.25) + 
+               colour = "black", size = 0.25) + 
   scale_fill_brewer(palette = "YlOrRd", name = "Blight\nUnits") +
-  theme(panel.background = element_rect(fill = "lightblue")) +
+  theme_minimal() +
   xlab("Longitude") +
   ylab("Latitude") +
   ggtitle("Daily Blight Unit Accumulation Per Potato Growing Season") +
   coord_map("mollweide")
+
+### Plot Nepal (Similar to Figure 9 from Sparks et al. 2014)
+ggplot(data = nepal) +
+  geom_polygon(aes(x = long, 
+                   y = lat, 
+                   group = group)) +
+  geom_tile(data = raster.df,
+            aes(x = x, 
+                y = y, 
+                fill = CRUCL2.0_SimCastMeta_Susceptible_Prediction,
+                colour = CRUCL2.0_SimCastMeta_Susceptible_Prediction)) +
+  scale_fill_continuous(low = "yellow", high = "red4", 
+                    name = "Blight\nunits") +
+  scale_colour_continuous(low = "yellow", high = "red4", 
+                      name = "Blight\nunits") +
+  theme_minimal() +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  coord_map(projection = "lambert", lat0 = 26.34, lat1 = 30.45)
 
 
 ## Plot average global blight risk by countries
 ### Graphs
 
 top10 # View the top 10 potato producing countries by Ha production and corresponding blight units (level risk)
+top10.blight # View the top ten countries by highest risk for late blight
 
 ### Generate bubble chart of blight units, potato yields and hectarage of Top 10 potato producing countries
 ## Note that that the log(Ha) is used so that data displays properly, otherwise China's data skews plot
@@ -166,17 +199,15 @@ ggplot(top10, aes(x = HaPotato, y = BlightRisk, size = Yield/10000, label = Coun
   geom_point(colour = "white", fill = "red", shape = 21, alpha = 0.5) + 
   scale_size_area(max_size = 30, "Yield (T/Ha)") +
   xlab("Potato production (Ha)") +
-  ylab("Blight units") +
+  ylab("Average daily blight units") +
   geom_text(size = 4) 
 
-### Generate a bar chart of the ten countries with the highest blight risks
-top10.blight # Top ten countries by highest risk for late blight
 
-### Generate bar chart of blight units for Top 10 countries ranked by blight risk
+### Generate bar chart of blight units for Top 10 countries ranked by blight risk for historic normal conditions
 ggplot(top10.blight, aes(x = factor(Country), y = BlightRisk)) +
   geom_bar(stat = "identity", aes(fill = BlightRisk)) +
   xlab("Country") +
-  scale_fill_gradient("Blight Units") +
+  scale_fill_gradient("Average daily blight units") +
   ylab("Blight Units") +
   coord_flip()
 
