@@ -40,6 +40,7 @@ if(!file.exists(paste(getwd(), "/ne_50m_admin_0_countries.shp", sep = ""))) {
 }
 
 NE <- readOGR(dsn = ".", layer = "ne_50m_admin_0_countries")
+NE <- crop(NE, extent(-180, 180, 84, -60)) # remove Antarctica from the data for cleaner map
 
 ## Download crop production data from FAO and create dataframe of only potato production data
 ## If you have already run this script, the script will skip this step
@@ -100,9 +101,23 @@ FAO <- subset(FAO, Country != "R\xe9union")
 ##### End of data import and cleanup #####
 
 ##### Data extraction and munging #####
+
 NE@data <- left_join(NE@data, FAO, by = c("admin" = "Country"))
 
 values <- extract(CRUCL2.0.risk, NE, fun = mean, na.rm = TRUE, sp = TRUE) # Extract the values of the raster object by country polygons in shape file and add them to a new spatial object
+
+## Create fortified data frame for mapping using ggplot2
+values@data$id <- rownames(values@data)
+values.f <- fortify(values, region = "id")
+values.f <- left_join(values.f, values@data, by = "id")
+values.f$CRUCL2.0_SimCastMeta_Susceptible_Prediction[is.na(values.f$CRUCL2.0_SimCastMeta_Susceptible_Prediction)] <- 0
+
+## Convert continuous data to factors for mapping
+lb.breaks <- seq(0, 3.5, by = 0.5)
+values.f$cuts <- cut(values.f$CRUCL2.0_SimCastMeta_Susceptible_Prediction,
+                     breaks = lb.breaks,
+                     include.lowest = TRUE)
+
 
 ## Create a new dataframe for ggplot2 to use to graph
 averages <- na.omit(data.frame(values@data$sovereignt,
@@ -120,13 +135,29 @@ sorted.blight <- averages[order(averages$BlightRisk), ] # Sort by hectares of po
 top10.blight <- data.frame(tail(sorted.blight, 10)) # Create data frame of top ten growing countries for graph
 top10.blight$Country <- factor(top10.blight$Country, levels = top10.blight$Country[order(top10.blight$BlightRisk)]) # Order by blight units, not country
 
+
 #### End data extraction and munging ####
+
 
 ##### Data visualization #####
 
+### Maps ###
+# Mean blight units by country
+ggplot() +
+  geom_polygon(data = values.f, 
+               aes(x = long, y = lat, group = group, 
+                   fill = cuts), 
+               color = "black", size = 0.25) + 
+  scale_fill_brewer(palette = "YlOrRd", name = "Blight\nUnits") +
+  theme(panel.background = element_rect(fill = "lightblue")) +
+  xlab("Longitude") +
+  ylab("Latitude") +
+  ggtitle("Daily Blight Unit Accumulation Per Potato Growing Season") +
+  coord_map("mollweide")
+
+
 ## Plot average global blight risk by countries
 ### Graphs
-
 
 top10 # View the top 10 potato producing countries by Ha production and corresponding blight units (level risk)
 
