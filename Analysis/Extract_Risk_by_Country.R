@@ -15,6 +15,7 @@ library(ggplot2)
 library(rgdal)
 library(reshape)
 library(dplyr)
+library(readr)
 ####### End Libraries ######
 
 ##### Begin data import and cleanup #####
@@ -30,7 +31,7 @@ CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susc
 #CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
 
 ## Download Natural Earth 1:50 Scale Data for extracting data from FAO ##
-# If you've already done this, it will skip this step and just read the shp file
+# If you've already run this script, it will skip this step and just read the shp file
 if(!file.exists(paste(getwd(), "/ne_50m_admin_0_countries.shp", sep = ""))) {
   download.file("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip", 
                 tf.ne, 
@@ -41,9 +42,16 @@ if(!file.exists(paste(getwd(), "/ne_50m_admin_0_countries.shp", sep = ""))) {
 NE <- readOGR(dsn = ".", layer = "ne_50m_admin_0_countries")
 
 ## Download crop production data from FAO and create dataframe of only potato production data
-download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", tf.fao, mode = "wb") # this is a large file
-FAO <- read.csv(unzip(tf.fao), stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
-file.remove("Production_Crops_E_All_Data.csv") # clean up the unzipped CSV file
+## If you have already run this script, the script will skip this step
+if(!file.exists(paste(getwd(), "Production_Crops_E_All_Data.csv", sep = ""))) {
+  download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
+                tf.fao, 
+                mode = "wb") # this is a large file
+  FAO <- read_csv(unzip(tf.fao), stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
+}
+
+FAO <- read_csv("Production_Crops_E_All_Data.csv")
+
 FAO <- subset(FAO, CountryCode < 5000) # select only countries, not areas
 FAO <- subset(FAO, Year == max(FAO$Year)) # select the most recent year available
 FAO <- subset(FAO, Item == "Potatoes") # select only potatoes
