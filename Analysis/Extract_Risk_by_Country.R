@@ -40,7 +40,7 @@ if(!file.exists(paste(getwd(), "/ne_50m_admin_0_countries.shp", sep = ""))) {
 }
 
 NE <- readOGR(dsn = ".", layer = "ne_50m_admin_0_countries")
-NE <- crop(NE, extent(-180, 180, 84, -60)) # remove Antarctica from the data for cleaner map
+NE <- crop(NE, extent(-180, 180, -60, 84)) # remove Antarctica from the data for cleaner map
 
 ## Download crop production data from FAO and create dataframe of only potato production data
 ## If you have already run this script, the script will skip this step
@@ -101,7 +101,6 @@ FAO <- subset(FAO, Country != "R\xe9union")
 ##### End of data import and cleanup #####
 
 ##### Data extraction and munging #####
-
 NE@data <- left_join(NE@data, FAO, by = c("admin" = "Country"))
 
 values <- extract(CRUCL2.0.risk, NE, fun = mean, na.rm = TRUE, sp = TRUE) # Extract the values of the raster object by country polygons in shape file and add them to a new spatial object
