@@ -47,7 +47,7 @@ if(!file.exists(paste(getwd(), "Production_Crops_E_All_Data.csv", sep = ""))) {
   download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
                 tf.fao, 
                 mode = "wb") # this is a large file
-  FAO <- read_csv(unzip(tf.fao), stringsAsFactors = FALSE, nrows = 2359749) # unzip and read the resulting csv file from FAO
+  FAO <- unzip(tf.fao) # unzip csv file from FAO
 }
 
 FAO <- read_csv("Production_Crops_E_All_Data.csv")
