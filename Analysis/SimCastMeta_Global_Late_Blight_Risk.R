@@ -2,7 +2,7 @@
 # title         : SimCastMeta_Global_Late_Blight_Risk.R;
 # purpose       : create global potato late blight risk using SimCastMeta with CRU CL 2.0 data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, June 2014;
+# last update   : in Los Baños, Laguna, Dec 2015;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : ;
 # remarks 1     : EcoCrop CRU CL2.0 Potato Growing Seasons.R must be run to generate the planting
@@ -22,7 +22,7 @@ source("Functions/create_stack.R")
 #### End Functions ####
 
 #### Begin data import ####
-if(file.exists("Cache/Planting Seasons/CRUCL2.0_PRF.tif") != TRUE){
+if(!file.exists("Cache/Planting Seasons/CRUCL2.0_PRF.tif")){
   source("Models/Ecocrop CRU CL2.0 Potato Growing Seasons.R")} else
     poplant <- raster("Cache/Planting Seasons/CRUCL2.0_PRF.tif")
 
@@ -33,7 +33,7 @@ if(file.exists("Cache/Planting Seasons/CRUCL2.0_PRF.tif") != TRUE){
 blight.units <- read.table("Cache/Blight Units/monthly_susceptible_blight_units.txt", head = TRUE, sep = "\t", nrows = 14749)
 
 ## Create a RESISTANT model with this data for monthly weather data
-blight.units <- read.table("Cache/Blight Units/monthly_resistant_blight_units.txt", head = TRUE, sep = "\t", nrows = 14749)
+#blight.units <- read.table("Cache/Blight Units/monthly_resistant_blight_units.txt", head = TRUE, sep = "\t", nrows = 14749)
 
 ##### End data import #####
 
