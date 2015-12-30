@@ -11,7 +11,7 @@ The study for which these models were developed can be found in [Sparks, A. H., 
 
 ## Directory structure ##
 * **Analysis** - Contains scripts that are used for analysis
-  * **Extract_Risk_by_Country.R** - Script that will download FAO production data and merge with country data to visualize countries risk rank
+  * **Extract_Map_and_Visualise_Risk_by_Country.R** - Script that will download FAO production data and merge with country data to visualize countries risk rank
   * **SimCastMeta_Global_Late_Blight_Risk.R** - Script that uses SimCastMeta to generate global raster maps of blight units from climate data
 * **Cache** - Contains supporting data that has been modified from original format in some meaningful way.
   * **Blight Units** - Data necessary for creating the models
