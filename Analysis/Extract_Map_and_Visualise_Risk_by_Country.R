@@ -25,7 +25,7 @@ tf.ne <- tempfile()
 
 ##!!!!!!!!!! Use only ONE of the following rasters at a time !!!!!!!!!!##
 ## use only SUSCEPTIBLE blight units ##
-CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
+CRUCL2.0.risk <- raster("./Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
 
 ## or use RESISTANT Blight Units ##
 #CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
@@ -33,26 +33,26 @@ CRUCL2.0.risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susc
 
 ## Download Natural Earth 1:50 Scale Data for extracting data from FAO and global map ##
 # If you've already run this script, it will skip this step and just read the shp file
-if(!file.exists(paste(getwd(), "/ne_50m_admin_0_countries.shp", sep = ""))) {
+if(!file.exists(paste(getwd(), "./Data/ne_50m_admin_0_countries.shp", sep = ""))) {
   download.file("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip", 
                 tf.ne, 
                 mode = "wb")
-  unzip(tf.ne)
+  unzip(tf.ne, exdir = "./Data")
 }
 
-NE <- readOGR(dsn = ".", layer = "ne_50m_admin_0_countries")
+NE <- readOGR(dsn = "./Data", layer = "ne_50m_admin_0_countries")
 NE <- crop(NE, extent(-180, 180, -60, 84)) # remove Antarctica from the data for cleaner map
 
 ## Download crop production data from FAO and create dataframe of only potato production data
 ## If you have already run this script, the script will skip this step
-if(!file.exists(paste(getwd(), "/Production_Crops_E_All_Data.csv", sep = ""))) {
+if(!file.exists(paste(getwd(), "./Data/Production_Crops_E_All_Data.csv", sep = ""))) {
   download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
                 tf.fao, 
                 mode = "wb") # this is a large file
-  FAO <- unzip(tf.fao) # unzip csv file from FAO
+  FAO <- unzip(tf.fao, exdir = "./Data") # unzip csv file from FAO
 }
 
-FAO <- read_csv("Production_Crops_E_All_Data.csv")
+FAO <- read_csv("./Data/Production_Crops_E_All_Data.csv")
 
 FAO <- subset(FAO, CountryCode < 5000) # select only countries, not areas
 FAO <- subset(FAO, Year == max(FAO$Year)) # select the most recent year available
@@ -101,7 +101,7 @@ FAO <- subset(FAO, Country != "R\xe9union")
 
 
 ## Download Nepal GADM data to generate ecosystem map ##
-nepal <- getData("GADM", country = "NPL", level = 0)
+nepal <- getData("GADM", country = "NPL", level = 0, path = "./Data")
 
 
 ##### End of data import and cleanup #####
