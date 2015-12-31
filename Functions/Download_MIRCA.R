@@ -2,7 +2,7 @@
 # title         : Download_MIRCA.R;
 # purpose       : Download and unzip MIRCA data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, May 2014;
+# last update   : in Los Baños, Laguna, Dec 2015;
 # inputs        : MIRCA Potato Harvest Area ESRI ASC gzipped file;
 # outputs       : MIRCA Potato Harvest Area ESRI ASC file;
 # remarks       : ;
@@ -39,7 +39,7 @@ download.MIRCA <- function(){
     
     MIRCA[MIRCA <= 0] <- NA #reclassify anything below 0% area to NA
     MIRCA <- crop(MIRCA, c(-180, 180, -60, 90)) # crop perc.Area to match extent of CRU CL2.0
-    writeRaster(MIRCA, 'Data/MIRCA_Poplant.tif', overwrite = TRUE, format = "GTiff", c("COMPRESS=LZW"))
+    writeRaster(MIRCA, "./Data/MIRCA_Poplant.tif", overwrite = TRUE, format = "GTiff", c("COMPRESS=LZW"))
 
     file.remove("Data/ANNUAL_AREA_HARVESTED_IRC_CROP10_HA.ASC.gz")
     file.remove("Data/ANNUAL_AREA_HARVESTED_RFC_CROP10_HA.ASC.gz")
