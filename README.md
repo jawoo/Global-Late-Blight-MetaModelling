@@ -15,6 +15,8 @@ Following H. Wickham's style guide, the folders (in bold) and scripts are number
 
 The scripts can easily be run on a modest machine, it only takes a few hours to complete on an Early 2015 MacBook with the Core M 1.3 processor. A reasonably fast Internet connection will assist since there is a good deal of data to be downloaded from various sources. FAO data is used to provide information on the top producing countries, the most recent year provided is used by default.
 
+For RStudio users, there is an RProj file included that makes things easier. For all others, I'll assume you know what you're doing and how to set your working directory accordingly with the file structure contained herein.
+
 Happy modelling!
 
 ## Directory structure ##

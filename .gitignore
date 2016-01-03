@@ -1,16 +1,22 @@
-.Rproj.user
 .Rhistory
-.RData
-.DS_Store
-Global_Late_Blight_Risk_Mapping.Rproj
-*.csv
-*.shx
-*.shp
-*.dbf
-*.rds
-*.prj
-*.html
 
+.RData
+
+.DS_Store
+
+*.csv
+
+*.shx
+
+*.shp
+
+*.dbf
+
+*.rds
+
+*.prj
+
+*.html
 
 ne_50m_admin_0_countries.dbf
 
