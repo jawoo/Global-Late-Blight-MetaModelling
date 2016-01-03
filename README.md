@@ -1,4 +1,4 @@
-Global-Late-Blight-Modelling
+Global-Late-Blight-(Meta)Modelling
 ============================
 
 Introduction
