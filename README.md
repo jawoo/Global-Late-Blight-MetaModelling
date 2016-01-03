@@ -17,6 +17,8 @@ The scripts can easily be run on a modest machine, it only takes a few hours to 
 
 For RStudio users, there is an RProj file included that makes things easier. For all others, I'll assume you know what you're doing and how to set your working directory accordingly with the file structure contained herein.
 
+To cite this code, please use this DOI: 10.6084/m9.figshare.1066124
+
 Happy modelling!
 
 ## Directory structure ##
