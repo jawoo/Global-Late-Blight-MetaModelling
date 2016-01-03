@@ -1,8 +1,8 @@
 ##############################################################################
-# title         : create_stack.R;
+# title         : Create_Stack.R;
 # purpose       : Create raster stacks of CRU CL 2.0 data;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, April 2014;
+# last update   : in Los Baños, Laguna, Jan 2016;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : ;
 # remarks 1     : a standalone version exists as a gist here: https://gist.github.com/adamhsparks/11284393;
@@ -10,8 +10,8 @@
 ##############################################################################
 
 ## Create raster objects using cellFromXY and generate a raster stack
-## create.stack takes pre, tmp, tmn and tmx and creates a raster object stack of 12 month data
-create.stack <- function(wvar){ 
+## create_stack takes pre, tmp, tmn and tmx and creates a raster object stack of 12 month data
+create_stack <- function(wvar){ 
   ##### column names and later layer names for raster stack objects ####
   months <- c("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
   
@@ -31,4 +31,4 @@ create.stack <- function(wvar){
   rm(x)
 }
 
-#eos
+# eos

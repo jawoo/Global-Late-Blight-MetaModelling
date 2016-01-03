@@ -1,9 +1,9 @@
 ##############################################################################
-# title         : run_ecocrop.R;
-# purpose       : function to run the ecocrop model using a raster stack;
+# title         : Run_EcoCrop.R;
+# purpose       : function to run the EcoCrop model using a raster stack;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Los Baños, Philippines, June 2014;
-# inputs        : raster stacks of avg/min/max temperature, precipitation;
+# last update   : in Los Baños, Philippines, Jan 2016;
+# inputs        : EcoCrop planting date predictions;
 # outputs       : na;
 # remarks 1     : ;
 # Licence:      : GPL2;
@@ -17,7 +17,7 @@ pot@TMIN  <- 7
 pot@TOPMX <- 20
 pot@GMIN  <- pot@GMAX <- 100
 
-run.ecocrop <- function(pot, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
+run_ecocrop <- function(pot, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) {
   filename  <- trim(filename)
   outr      <- raster(tmp)
   v         <- vector(length = ncol(outr))
@@ -38,7 +38,10 @@ run.ecocrop <- function(pot, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) 
       }
       
       if(sum(is.na(clm)) == 0) {
-        e <- ecocrop(crop = pot, tmin = clm[, 1], tavg = clm[, 2], prec = clm[, 3], rain = rainfed) 
+        e <- ecocrop(crop = pot, tmin = clm[, 1], 
+                     tavg = clm[, 2], 
+                     prec = clm[, 3], 
+                     rain = rainfed) 
         v[i] <- e@maxper[1]
       }
     }
@@ -50,5 +53,4 @@ run.ecocrop <- function(pot, tmn, tmx, tmp, pre, rainfed = TRUE, filename, ...) 
 }
 
 #eos
-
   
