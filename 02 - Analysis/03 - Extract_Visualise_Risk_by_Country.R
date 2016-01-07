@@ -23,21 +23,21 @@ tf_FAO <- tempfile()
 
 # Use only ONE of the following rasters sets at a time
 
-CRUCL2.0_risk <- raster("./Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
-A2_risk <- raster("./Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Prediction.tif")
+CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
+A2_risk <- raster("Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Prediction.tif")
 
 # or use only RESISTANT Blight Units
-#CRUCL2.0_risk <- raster("./Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
-#A2_risk <- raster("./Cache/Global Blight Risk Maps/A2_SimCastMeta_Resistant_Prediction.tif")
+#CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Resistant_Prediction.tif")
+#A2_risk <- raster("Cache/Global Blight Risk Maps/A2_SimCastMeta_Resistant_Prediction.tif")
 
 # Download Natural Earth 1:50 Scale Data for  extracting data from FAO and making global map
 if(!file.exists(paste(getwd(), "/Data/ne_50m_admin_0_countries.shp", sep = ""))) {
   download.file("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip", 
                 tf_NE, mode = "wb")
-  unzip(tf_NE, exdir = "./Data")
+  unzip(tf_NE, exdir = "Data")
 }
 
-NE <- readOGR(dsn = "./Data", layer = "ne_50m_admin_0_countries")
+NE <- readOGR(dsn = "Data", layer = "ne_50m_admin_0_countries")
 NE <- crop(NE, extent(-180, 180, -60, 84)) # remove Antarctica from the data for cleaner map
 
 # Download crop production data from FAO and 
@@ -45,10 +45,10 @@ NE <- crop(NE, extent(-180, 180, -60, 84)) # remove Antarctica from the data for
 if(!file.exists(paste(getwd(), "/Data/Production_Crops_E_All_Data.csv", sep = ""))) {
   download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
                 tf_FAO, mode = "wb") # this is a large file
-  FAO <- unzip(tf_FAO, exdir = "./Data") # unzip csv file from FAO
+  FAO <- unzip(tf_FAO, exdir = "Data") # unzip csv file from FAO
 }
 
-FAO <- read_csv("./Data/Production_Crops_E_All_Data.csv")
+FAO <- read_csv("Data/Production_Crops_E_All_Data.csv")
 
 FAO <- subset(FAO, CountryCode < 5000) # select only countries, not areas
 FAO <- subset(FAO, Year == max(FAO$Year)) # select the most recent year available
