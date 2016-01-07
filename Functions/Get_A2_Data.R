@@ -14,31 +14,31 @@ download_A2_data <- function(){
 
   if(length(list.files(path = "Data/A2 Precipitation")) != 36){
     download.file("http://files.figshare.com/1571643/A2_Precipitation.zip", 
-                  tf, method = "wb")
+                  tf, mode = "wb")
     unzip(tf, exdir = "Data", overwrite = TRUE)
   }
   
   if(length(list.files(path = "Data/A2 Minimum Temperature/")) != 36){
     download.file("http://files.figshare.com/1562951/A2_Minimum_Temperature.zip", 
-                  tf, method = "wb")
+                  tf, mode = "wb")
     unzip(tf, exdir = "Data", overwrite = TRUE)
   }
   
   if(length(list.files(path = "Data/A2 Maximum Temperature")) != 36){
     download.file("http://files.figshare.com/1562950/A2_Maximum_Temperature.zip", 
-                  tf, method = "wb")
+                  tf, mode = "wb")
     unzip(tf, exdir = "Data", overwrite = TRUE)
   }
   
   if(length(list.files(path = "Data/A2 Average Temperature")) != 36){
     download.file("http://files.figshare.com/1562942/A2_Average_Temperature.zip", 
-                  tf, method = "wb")
+                  tf, mode = "wb")
     unzip(tf, exdir = "Data", overwrite = TRUE)
   }
   
   if(length(list.files(path = "Data/A2 Relative Humidity")) != 36){
     download.file("http://files.figshare.com/1545438/A2_Relative_Humidity.zip", 
-                  tf, method = "wb")
+                  tf, mode = "wb")
     unzip(tf, exdir = "Data", overwrite = TRUE)
   }
 }

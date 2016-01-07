@@ -13,15 +13,18 @@
 CRU_Growing_Season_DL <- function(){
   tf <- tempfile()
   # mean monthly diurnal temperature range
-  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_dtr.dat.gz", tf)
+  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_dtr.dat.gz", tf,
+                mode = "wb")
   dtr <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
   
   # mean monthly temperature
-  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz", tf)
+  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz", tf,
+                mode = "wb")
   tmp <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
   
   # mean monthly precipitation
-  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz", tf)
+  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_pre.dat.gz", tf,
+                mode = "wb")
   pre <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
   pre <- pre[, 1:14]
   
@@ -41,11 +44,13 @@ CRU_SimCastMeta_Data_DL <- function(){
   tf <- tempfile()
   
   # mean monthly temperature
-  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz", tf)
+  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_tmp.dat.gz", tf,
+                mode = "wb")
   tmp <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
   
   # mean monthly precipitation
-  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_reh.dat.gz", tf)
+  download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_reh.dat.gz", tf,
+                mode = "wb")
   reh <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
   
   vars <- list(reh, tmp)
