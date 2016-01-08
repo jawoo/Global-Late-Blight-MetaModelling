@@ -40,6 +40,8 @@ tmp_stack <- stack(list.files(path = "Data/A2 Average Temperature",
                               pattern = "a2tmp50[[:digit:]]{2}.tif", 
                               full.names = TRUE))/10
 
+# Data munging -----------------------------------------------------------------
+
 # Removes areas where potato is not grown. EcoCrop will predict potato growth nearly anywhere with irrigation
 pre_stack <- mask(pre_stack, MIRCA)
 tmn_stack <- mask(tmn_stack, MIRCA)

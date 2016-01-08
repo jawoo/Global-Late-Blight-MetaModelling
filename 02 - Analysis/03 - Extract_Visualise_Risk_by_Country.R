@@ -40,8 +40,7 @@ if(!file.exists(paste(getwd(), "/Data/ne_50m_admin_0_countries.shp", sep = "")))
 NE <- readOGR(dsn = "Data", layer = "ne_50m_admin_0_countries")
 NE <- crop(NE, extent(-180, 180, -60, 84)) # remove Antarctica from the data for cleaner map
 
-# Download crop production data from FAO and 
-# create dataframe of only potato production data ------------------------------
+# Download crop production data from FAO
 if(!file.exists(paste(getwd(), "/Data/Production_Crops_E_All_Data.csv", sep = ""))) {
   download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
                 tf_FAO, mode = "wb") # this is a large file
@@ -50,6 +49,7 @@ if(!file.exists(paste(getwd(), "/Data/Production_Crops_E_All_Data.csv", sep = ""
 
 FAO <- read_csv("Data/Production_Crops_E_All_Data.csv")
 
+# Data munging -----------------------------------------------------------------
 FAO <- subset(FAO, CountryCode < 5000) # select only countries, not areas
 FAO <- subset(FAO, Year == max(FAO$Year)) # select the most recent year available
 FAO <- subset(FAO, Item == "Potatoes") # select only potatoes
@@ -61,7 +61,7 @@ names(production)[9:10] <- c("AreaUnit", "AreaHarvested") # Rename the productio
 FAO <- merge(production, yield, by = c( "CountryCode", "Country", "ItemCode", "Item", "Year")) 
 names(FAO)[14:15] <- c("YieldUnit", "Yield") 
 
-# Replace names of countries that will not match rworldmap data names ----------
+# Replace names of countries that will not match rworldmap data names 
 FAO <- subset(FAO, Country != "China")
 FAO[, 2][FAO[, 2] == "China, mainland"] <- "China"
 FAO <- subset(FAO, Country != "China, Macao SAR") # Remove Macao, neglible potoato
@@ -80,7 +80,7 @@ FAO <- subset(FAO, Country != "R\xe9union")
 # create an object of only Nepal for map of change in Nepal
 nepal <- subset(NE, admin == "Nepal")
 
-# Data manipulation ------------------------------------------------------------
+
 change <- A2_risk - CRUCL2.0_risk
 
 NE@data <- left_join(NE@data, FAO, by = c("admin" = "Country"))

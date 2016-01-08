@@ -27,7 +27,7 @@ if(!file.exists("Data/MIRCA_Poplant.tif")){
 }
 MIRCA <- raster("Data/MIRCA_Poplant.tif")
 
-# Data manipulation ------------------------------------------------------------
+# Data munging----- ------------------------------------------------------------
 pre_stack <- create_stack(CRU_data$pre)
 tmn_stack <- create_stack(CRU_data$tmn)
 tmp_stack <- create_stack(CRU_data$tmp)

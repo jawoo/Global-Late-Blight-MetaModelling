@@ -38,7 +38,7 @@ blight_units <- read_tsv("Cache/Blight Units/monthly_susceptible_blight_units.tx
 # Create a RESISTANT model with this data for monthly weather data
 #blight_units <- read_tsv("Cache/Blight Units/monthly_resistant_blight_units.txt")
 
-# Data manipulation ------------------------------------------------------------
+# Data munging -----------------------------------------------------------------
 # Split the weather data into two parts for construction and testing
 # we used six years of HUSWO data to generate the values, so split at 1992/1993
 construction_data <- subset(blight_units, Year <= 1992)
