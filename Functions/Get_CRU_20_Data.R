@@ -48,7 +48,7 @@ CRU_SimCastMeta_Data_DL <- function(){
                 mode = "wb")
   tmp <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
   
-  # mean monthly precipitation
+  # mean monthly relative humidity
   download.file("http://www.cru.uea.ac.uk/cru/data/hrg/tmc/grid_10min_reh.dat.gz", tf,
                 mode = "wb")
   reh <- read.table(tf, header = FALSE, colClasses = "numeric", nrows = 566268)
