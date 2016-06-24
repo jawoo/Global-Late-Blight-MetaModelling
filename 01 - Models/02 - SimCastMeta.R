@@ -16,6 +16,7 @@
 # Load libraries ---------------------------------------------------------------
 require("mgcv")
 require("ggplot2")
+require("ggthemes")
 require("plyr")
 require("readr")
 require("rgl")
@@ -57,40 +58,43 @@ summary(gam_predict)
 testing_prediction <- predict.gam(gam_predict, testing_data)
 
 # Some values fall below 0, this cannot happen in reality, so set negative values to 0
-testing_prediction[testing_prediction<0]=0
+testing_prediction[testing_prediction < 0] <- 0
 
 # check the correlation between the orginal and the predicted
 cor(testing_data$Blight, testing_prediction)
 
 # Model visualisation ----------------------------------------------------------
 
-test.plot <- as.data.frame(cbind(testing_data$Blight, testing_prediction))
-colnames(test.plot) <- c("blight", "blight.prediction")
+test_plot <- as.data.frame(cbind(testing_data$Blight, testing_prediction))
+colnames(test_plot) <- c("blight", "blight_prediction")
 
 # Graphs
+
 vis.gam(
-  gam_predict, 
-  theta = -45, 
-  phi = 35, 
-  ticktype = "detailed", 
-  main = "", 
-  zlab="Predicted Blight Units", 
-  ylab = "Relative Humidity (%)", 
-  xlab = "Temperature (°C)", 
-  shade = TRUE, 
-  zlim = c(0, 8), 
-  cex.lab = 0.8, 
+  gam_predict,
+  theta = -45,
+  phi = 35,
+  ticktype = "detailed",
+  main = "",
+  zlab = "Predicted Blight Units",
+  ylab = "Relative Humidity (%)",
+  xlab = "Temperature (°C)",
+  shade = 0.65,
+  zlim = c(0, 8),
+  cex.lab = 0.8,
   cex.axis = 0.8
 )
 
-# Boxplots
-p <- ggplot(test.plot, aes(y = test.plot[, 2], x = test.plot[, 1],
-                           group = round_any(blight, 0.1, floor)))
+# Boxplots with 1:1 line (dashed) and fitted line (blue)
+p <- ggplot(test_plot, aes(y = blight_prediction, x = blight))
 
-p <- p + geom_boxplot(outlier.shape = NA) + 
+p + geom_tufteboxplot(outlier.shape = NA, 
+                      aes(group = round_any(blight, 0.1, floor))) + 
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) + 
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
   scale_x_continuous("Blight Units Predicted by SimCast") + 
-  scale_y_continuous("Blight Units Predicted by SimCast_Meta")
-
-p
+  scale_y_continuous("Blight Units Predicted by SimCast_Meta") +
+  theme_tufte() +
+  ggtitle("Predicted Blight Units for a Susceptible Cultivar")
 
 # eos
