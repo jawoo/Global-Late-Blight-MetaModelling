@@ -22,7 +22,7 @@ source("Functions/Get_A2_Data.R")
 # This will take a while if you've not already done it
 download_A2_data() 
 
-if(file.exists("Cache/Planting Seasons/A2_2050_Combined.tif") == TRUE){
+if (file.exists("Cache/Planting Seasons/A2_2050_Combined.tif") == TRUE) {
   poplant <- raster("Cache/Planting Seasons/A2_2050_Combined.tif")
   } else source("Models/Ecocrop A2 Scenario Potato Growing Seasons.R")
 
@@ -49,30 +49,30 @@ tmp_stack <- stack(list.files(path = "Data/A2 Average Temperature",
 reh_stack <- mask(reh_stack, poplant)
 tmp_stack <- mask(tmp_stack, poplant)
 
-for(i in 1:12){
+for (i in 1:12) {
   x <- stack(tmp_stack[[i]], reh_stack[[i]])
   names(x) <- c("C", "RH")
   y <- predict(x, SimCastMeta, progress = "text")
-  y[y<0] = 0
+  y[y < 0] = 0
   names(y) <- paste(i)
-  if(i == 1){z <- y} else z <- stack(z, y)
-  i <- i+1
+  if (i == 1) {z <- y} else z <- stack(z, y)
+  i <- i + 1
 }
 
-for(j in 1:12){
-  if(j == 1){
+for (j in 1:12) {
+  if (j == 1) {
     w <- reclassify(poplant, c(01, 12, NA))
-    x <- stack(z[[j]], z[[j+1]], z[[j+2]])
+    x <- stack(z[[j]], z[[j + 1]], z[[j + 2]])
     x <- mask(x, w)
     y <- mean(x)
-  } else if(j > 1 && j < 11){
-    w <- reclassify(poplant, c(0, paste("0", j-1, sep = ""), NA))
+  } else if (j > 1 && j < 11) {
+    w <- reclassify(poplant, c(0, paste("0", j - 1, sep = ""), NA))
     w <- reclassify(w, c(paste("0", j, sep = ""), 12, NA))
-    x <- stack(z[[j]], z[[j+1]], z[[j+2]])
+    x <- stack(z[[j]], z[[j + 1]], z[[j + 2]])
     x <- mask(x, w)
     a <- mean(x)
     y <- cover(y, a)
-  } else if(j == 11){
+  } else if (j == 11) {
     w <- reclassify(poplant, c(0, 10, NA))
     w <- reclassify(w, c(11, 12, NA))
     x <- stack(z[[11]], z[[12]], z[[1]])
@@ -92,7 +92,7 @@ plot(global_blight_risk, main = "Average Daily Blight Unit Accumulation\nPer Thr
      legend.args = list(text = "Blight\nUnits", side = 3, font = 2, line = 1, cex = 0.8))
 
 # Save the results for further use or analysis ---------------------------------
-if(max(blight_units$Blight == 6.39)){ # check to see whether we've used resistant or susceptible blight units for this analysis and assign new file name accordingly
+if (max(blight_units$Blight == 6.39)) { # check to see whether we've used resistant or susceptible blight units for this analysis and assign new file name accordingly
   writeRaster(global_blight_risk, "Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Prediction.tif",
               format = "GTiff", dataType = "INT2S", 
               options = c("COMPRESS=LZW"), 
