@@ -1,15 +1,20 @@
 ################################################################################
 # title         : 02 - SimCastMeta.R;
-# purpose       : Create a SimCastMeta GAM model for a daily or monthly time-step;
+# purpose       : Create a SimCastMeta GAM model for a daily or monthly
+#                 time-step;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, Jan 2016;
+# last update   : in Toowoomba, QLD, Jun 2016;
 # inputs        : blight unit values as calculated in SimCast_Blight_Units.R;
-# outputs       : GAM suitable for predicting late blight risk using daily T and RH data
+# outputs       : GAM suitable for predicting late blight risk using daily T
+#                 and RH data
 #                 graphs illustrating fit of the model;
 # remarks       : this model is documented in:
-#                 Sparks, A. H., Forbes, G. A., Hijmans, R. J., & Garrett, K. A. (2011). 
-#                 A metamodeling framework for extending the application domain of process-based 
-#                 ecological models. Ecosphere, 2(8), art90. doi:10.1890/ES11-00128.1
+#                 Sparks, A. H., Forbes, G. A., Hijmans, R. J., & Garrett,
+#                 K. A. (2011). 
+#                 A metamodeling framework for extending the application domain
+#                 of process-based 
+#                 ecological models. Ecosphere, 2(8), art90.
+#                 doi:10.1890/ES11-00128.1
 # Licence:      : GPL2;
 ################################################################################
 
@@ -48,8 +53,10 @@ construction_data <- subset(blight_units, Year <= 1992)
 testing_data <- subset(blight_units, Year >= 1993)
 
 # Modelling --------------------------------------------------------------------
-# A k of 150 generated the most biologically believable model with the daily data we used based on GCV score 
-# higher values indicate a "better fitting" model, but an examination of the 3D surface indicates otherwise
+# A k of 150 generated the most biologically believable model with the daily
+# data we used based on GCV score 
+# higher values indicate a "better fitting" model, but an examination of the 3D
+# surface indicates otherwise
 
 gam_predict <- gam(Blight~s(C, RH, k = 150), data = construction_data)
 summary(gam_predict)
@@ -57,7 +64,8 @@ summary(gam_predict)
 # Test the model
 testing_prediction <- predict.gam(gam_predict, testing_data)
 
-# Some values fall below 0, this cannot happen in reality, so set negative values to 0
+# Some values fall below 0, this cannot happen in reality, so set negative
+# values to 0
 testing_prediction[testing_prediction < 0] <- 0
 
 # check the correlation between the orginal and the predicted

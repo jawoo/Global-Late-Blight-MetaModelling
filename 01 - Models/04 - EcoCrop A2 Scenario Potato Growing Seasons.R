@@ -3,7 +3,7 @@
 # purpose       : create global potato growing seasons using Ecocrop with A2 
 #               : climate emission scenario data;
 # producer      : prepared by R. Hijmans and A. Sparks;
-# last update   : in Los Baños, Philippines, Jan 2016;
+# last update   : in Toowoomba, Qld, Australia, Jun 2016;
 # inputs        : A2 Ensemble Model Climate data;
 # outputs       : PotatoPlant_A2_2050.grd, A2_2050_PRF.grd, A2_2050_PIR.grd;
 # remarks 1     : ;
@@ -20,13 +20,15 @@ source("Functions/Get_A2_Data.R")
 source("Functions/Get_MIRCA.R")
 
 # Load data --------------------------------------------------------------------
-if(file.exists("Data/MIRCA_Poplant.tif") == TRUE){
-  MIRCA <- raster("Data/MIRCA_Poplant.tif") # The file already exists and we save time by just reading into R
+if (file.exists("Data/MIRCA_Poplant.tif") == TRUE) {
+  MIRCA <- raster("Data/MIRCA_Poplant.tif")
 } else download.MIRCA() # function will download and unzip MIRCA data
 
-download_A2_data() # download A2 climate data files from Figshare. This will take a while.
+download_A2_data() # download A2 climate data files from Figshare.
 
-# sort out the different time-slices, most analysis was with 2050 only so it is the only one featured here. Feel free to use the other two time-slices in the same fashion
+# sort out the different time-slices, most analysis was with 2050 only so it is
+# the only one featured here. Feel free to use the other two time-slices in the
+# same fashion
 pre_stack <- stack(list.files(path = "Data/A2 Precipitation", 
                               pattern = "a2pr50[[:digit:]]{2}.tif", 
                               full.names = TRUE))/10
@@ -42,7 +44,8 @@ tmp_stack <- stack(list.files(path = "Data/A2 Average Temperature",
 
 # Data munging -----------------------------------------------------------------
 
-# Removes areas where potato is not grown. EcoCrop will predict potato growth nearly anywhere with irrigation
+# Removes areas where potato is not grown. EcoCrop will predict potato growth
+# nearly anywhere with irrigation
 pre_stack <- mask(pre_stack, MIRCA)
 tmn_stack <- mask(tmn_stack, MIRCA)
 tmx_stack <- mask(tmx_stack, MIRCA)
@@ -89,7 +92,8 @@ comb <- reclassify(comb, c(0, 0, NA), include.lowest = TRUE)
 com <- focal(comb, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE)
 com <- focal(com, fun = modal, na.rm = TRUE, w = matrix(1, 3, 3), NAonly = TRUE)
 
-# Finally, clean up the planting date map again with MIRCA to remove non-potato growing areas
+# Finally, clean up the planting date map again with MIRCA to remove non-potato
+# growing areas
 com <- mask(com, MIRCA)
 names(com) <- "Ecocrop Planting Dates for 2050"
 writeRaster(com, "Cache/Planting Seasons/A2_2050_Combined.tif",
