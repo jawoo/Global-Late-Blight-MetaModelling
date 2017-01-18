@@ -13,9 +13,9 @@
 #                  station in the dataset;
 # outputs       : blight unit values, averaged hourly weather data to daily for
 #                 each weather station;
-# remarks 1     : cultivar resistance values are changed on line 134;
+# remarks 1     : cultivar resistance values are changed on line 33 - 35;
 # remarks 2     : output file name should be changed to reflect the value
-# resistance on of line 134;
+#                 resistance on lines 33-35 that are selected;
 # remarks 3     : this model does not attempt to recreate the entire SimCast
 #                 model, only the blight unit portion
 #                 the fungicide unit portion is not a part of this script and
