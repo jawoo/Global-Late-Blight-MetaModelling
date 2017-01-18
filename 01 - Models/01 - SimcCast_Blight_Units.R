@@ -14,22 +14,17 @@
 # outputs       : blight unit values, averaged hourly weather data to daily for
 #                 each weather station;
 # remarks 1     : cultivar resistance values are changed on line 33 - 35;
-# remarks 2     : output file name should be changed to reflect the value
-#                 resistance on lines 33-35 that are selected;
-# remarks 3     : this model does not attempt to recreate the entire SimCast
+# remarks 2     : this model does not attempt to recreate the entire SimCast
 #                 model, only the blight unit portion
 #                 the fungicide unit portion is not a part of this script and
 #                 was not written in R;
-# remarks 4     : blight units calculated using this script are used in the
+# remarks 3     : blight units calculated using this script are used in the
 #                 creation of the SimCastMeta model;
 # license       : GPL2;
 ##############################################################################
 
-# select working directory where weather data is located
-setwd("")
+# Select the resistance level that should be run
 
-# Select the resistance level that should be run, also rename filename on line
-# 38 appropriately
 res = "S"
 #res = "MS"
 #res = "R"
@@ -41,11 +36,11 @@ ConsR <- NULL
 DayR <- NULL
 blightR <- NULL
 
-# Run this function to genearate blight unit calculations for the HUSWO data set
+# Run this function to generate blight unit calculations for the HUSWO data set
 DailyBlightUnitFiles <- function() {
-  files <- list.files(pattern  =  ".txt$")
+  files <- list.files("../Data", pattern = ".txt$")
   for (i in files) {
-    weather_data <- as.data.frame(readr::read_tsv(i))
+    weather_data <- as.data.frame(read_tsv(i))
     colnames(weather_data) <- c("stationID", "year", "month", "day", "hour", 
                                 "temperature", "relativeHumidity")
     blight_calcs <- DayR(weather_data = weather_data, max_year = 1995,
@@ -54,14 +49,13 @@ DailyBlightUnitFiles <- function() {
                   sep = "-")
     weather_data <- cbind(Date, blight_calcs)
     weather_data <- subset(weather_data, oYear >= 1)
-    if (res = "S") {
-      resistance <- "susceptible"} else if (res = "MS") {
+    if (res == "S") {
+      resistance <- "susceptible"
+      } else if (res == "MS") {
       resistance <- "moderate"} else
-        resistance <- "resistant"
+      resistance <- "resistant"
     filename <- paste0(i, resistance, "_dayR")
-    write.table(weather_data, file = filename, sep = "\t", 
-                col.names = FALSE, row.names = FALSE, eol = "\n",
-                append = FALSE)
+    write_tsv(weather_data, path = filename, col_names = FALSE, append = FALSE)
   }
 }
 
@@ -74,11 +68,9 @@ DayR <- function(weather_data, min_year, max_year) {
   oMonth <- oStation
   oDay <- oStation
   oBlight <- oStation
-  oBlightEstimatedWeatherValues <- oStation
   oC <- oStation
   oRH <- oStation
   uStation <- unique(weather_data$stationID)
-  nStation <- length(uStation)
   tC <- 0*(1:24)
   tRH <- 0*(1:24)
   globalIndex  <-  1
