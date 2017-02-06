@@ -2,10 +2,10 @@
 # title         : Get_CRU_20_Data.R;
 # purpose       : Two functions that download and process CRU CL 2.0 data into data frames in R;
 # producer      : prepared by A. Sparks;
-# last update   : in Los Baños, Laguna, Jan 2015;
+# last update   : in Toowoomba, Australia, Feb 2017;
 # inputs        : CRU CL2.0 Climate data;
 # outputs       : Raster stacks of CRU CL2.0 weather data;
-# remarks 1     : a standalone version exists as a gist here: https://gist.github.com/adamhsparks/11284393;
+# remarks 1     : the getCRUCLdata R package now provides this capability;
 # Licence:      : GPL2;
 ################################################################################
 
