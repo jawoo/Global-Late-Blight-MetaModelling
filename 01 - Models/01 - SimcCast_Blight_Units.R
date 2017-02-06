@@ -38,7 +38,7 @@ blightR <- NULL
 
 # Run this function to generate blight unit calculations for the HUSWO data set
 DailyBlightUnitFiles <- function() {
-  files <- list.files("../Data", pattern = ".txt$")
+  files <- list.files("Data/HUSWO", pattern = ".txt$", full.names =  TRUE)
   for (i in files) {
     weather_data <- as.data.frame(read_tsv(i))
     colnames(weather_data) <-
