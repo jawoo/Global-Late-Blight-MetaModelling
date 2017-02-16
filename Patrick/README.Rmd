@@ -1,0 +1,86 @@
+---
+title: "Reformat Patrick's Data"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reformat Patrick's Weather Data
+
+### Load required libraries
+
+```{r libraries}
+require("readr")
+require("lubridate")
+require("forecast")
+```
+
+### Import data file
+```{r import_data}
+# import and rename columns on import, ignoring current names in file
+station_data <-
+  readr::read_csv(
+    "~/Downloads/temp_humidity_Nakuru.csv",
+    col_names = c("stationID", "datetime", "temperature", "relativeHumidity"),
+    skip = 1
+  )
+
+# check the dataframe
+summary(station_data)
+
+
+# set -9999.00 values to NA
+station_data[station_data == -9999.00] <- NA
+```
+
+### Interpolate
+
+For the SimCast model to work in R there can not be any missing values, we'll interpolate
+to fill them in.
+
+```{r interpolate}
+t <- as.ts(station_data$temperature)
+station_data$t <- forecast::na.interp(t)
+
+rh <- as.ts(station_data$relativeHumidity)
+station_data$rh <- forecast::na.interp(rh)
+
+station_data <- as.data.frame(c(station_data, t, rh))
+```
+
+### Format and write to disk
+
+Now that we've fixed the missing values, let's clean up and write the new file out to disk
+
+```{r format}
+# Extract date/time bits
+station_data$year <- year(station_data$datetime)
+station_data$month <- month(station_data$datetime)
+station_data$day <- day(station_data$datetime)
+station_data$hour <- hour(station_data$datetime)
+
+# drop first six rows since they are .5 hourly not hourly
+station_data <- station_data[6:nrow(station_data), ]
+
+# drop the original data with missing values
+station_data <- station_data[, -c(3:4)]
+
+# rearrange into the order that the "01 - SimCast_Blight_Units.R expects"
+station_data <-
+  station_data[c("stationID",
+                 "year",
+                 "month",
+                 "day",
+                 "hour",
+                 "t",
+                 "rh")]
+
+# write new file to disk in format for use with "01 - SimCast_Blight_Units.R expects"
+write_tsv(station_data, path = "~/Downloads/Nakuru.txt")
+```
+
+## Appendix
+
+sessionInfo()
