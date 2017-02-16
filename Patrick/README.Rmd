@@ -83,4 +83,6 @@ write_tsv(station_data, path = "~/Downloads/Nakuru.txt")
 
 ## Appendix
 
+```{r appendix}
 sessionInfo()
+```
