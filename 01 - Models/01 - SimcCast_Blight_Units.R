@@ -25,9 +25,9 @@
 
 # Select the resistance level that should be run
 
-res = "S"
-#res = "MS"
-#res = "R"
+resistance = "S"
+#resistance = "MS"
+#resistance = "R"
 
 # Load libraries ---------------------------------------------------------------
 require("readr")
@@ -41,6 +41,7 @@ DailyBlightUnitFiles <- function() {
   files <- list.files("Data/HUSWO", pattern = ".txt$", full.names =  TRUE)
   for (i in files) {
     weather_data <- as.data.frame(read_tsv(i))
+    weather_data[, 6:7] <- round(weather_data[, 6:7], 1)
     colnames(weather_data) <-
       c("stationID",
         "year",
@@ -51,8 +52,8 @@ DailyBlightUnitFiles <- function() {
         "relativeHumidity")
     blight_calcs <-
       DayR(weather_data = weather_data,
-           max_year = 1995,
-           min_year = 1990)
+           max_year = 2017,
+           min_year = 2000)
     Date <-
       paste(blight_calcs$oYear,
             blight_calcs$oMonth,
@@ -60,16 +61,16 @@ DailyBlightUnitFiles <- function() {
             sep = "-")
     weather_data <- cbind(Date, blight_calcs)
     weather_data <- subset(weather_data, oYear >= 1)
-    if (res == "S") {
+    if (resistance == "S") {
       resistance <- "susceptible"
-    } else if (res == "MS") {
+    } else if (resistance == "MS") {
       resistance <- "moderate"
     } else
       resistance <- "resistant"
-    filename <- paste0(i, resistance, "_dayR")
+    filename <- paste0(basename(i), resistance, "_dayR.txt")
     write_tsv(
       weather_data,
-      path = filename,
+      path = paste0("Cache/Blight Units/", filename),
       col_names = FALSE,
       append = FALSE
     )
@@ -139,7 +140,7 @@ DayR <- function(weather_data, min_year, max_year) {
               out2 <-
                 blightR(consmc = out1$consmc,
                         tcons = out1$tcons,
-                        res = resistance)
+                        resistance = resistance)
               blight <- sum(out2)
               oStation[globalIndex] <- iStation
               oYear[globalIndex] <- iYear
@@ -197,9 +198,9 @@ ConsR <- function(tRH, tC) {
 }
 
 ## Blight Unit Calculation
-blightR <- function(consmc, tcons, res) {
+blightR <- function(consmc, tcons, resistance) {
   blight_unit = 0 * (1:12)
-  if (res == "S") {
+  if (resistance == "S") {
     for (k in (1:12)) {
       if (consmc[k] <= 27 & consmc[k] >= 3) {
         if (consmc[k] >= 23 & consmc[k] <= 27) {
@@ -280,7 +281,7 @@ blightR <- function(consmc, tcons, res) {
     
   }
   
-  if (res  ==  "MS") {
+  if (resistance  ==  "MS") {
     for (k in (1:12)) {
       if (consmc[k] <= 27 & consmc[k] >= 3) {
         if (consmc[k] >= 23 & consmc[k] <= 27) {
@@ -345,7 +346,7 @@ blightR <- function(consmc, tcons, res) {
         }
       }
     }
-  } else if (res  ==  "R") {
+  } else if (resistance  ==  "R") {
     for (k in (1:12)) {
       if (consmc[k] <= 27 & consmc[k] >= 3) {
         if (consmc[k] >= 23 & consmc[k] <= 27) {
