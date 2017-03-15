@@ -40,3 +40,7 @@ ne_50m_admin_0_countries.VERSION.txt
 
 *.Rproj.user
 .Rproj.user
+
+.Rproj.user/BBCF1FEA/pcs/files-pane.pper
+
+*.pper
