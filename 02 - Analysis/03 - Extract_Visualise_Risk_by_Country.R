@@ -12,15 +12,15 @@
 library(raster)
 library(maptools)
 library(ggplot2)
+library(ggthemes)
 library(rgdal)
 library(reshape)
 library(dplyr)
 library(readr)
+library(rnaturalearth)
+library(viridis)
 
 # Load Data --------------------------------------------------------------------
-tf_NE <- tempfile()
-tf_FAO <- tempfile()
-
 # Use only ONE of the following rasters sets at a time
 
 CRUCL2.0_risk <- raster("Cache/Global Blight Risk Maps/CRUCL2.0_SimCastMeta_Susceptible_Prediction.tif")
@@ -31,53 +31,19 @@ A2_risk <- raster("Cache/Global Blight Risk Maps/A2_SimCastMeta_Susceptible_Pred
 #A2_risk <- raster("Cache/Global Blight Risk Maps/A2_SimCastMeta_Resistant_Prediction.tif")
 
 # Download Natural Earth 1:50 Scale Data for  extracting data from FAO and making global map
-if (!file.exists(paste0(getwd(), "/Data/ne_50m_admin_0_countries.shp"))) {
-  download.file("http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/cultural/ne_50m_admin_0_countries.zip", 
-                tf_NE, mode = "wb")
-  unzip(tf_NE, exdir = "Data")
-}
-
-NE <- readOGR(dsn = "Data", layer = "ne_50m_admin_0_countries")
+NE <- ne_countries(scale = 50)
 NE <- crop(NE, extent(-180, 180, -60, 84)) # remove Antarctica from the data for cleaner map
 
-# Download crop production data from FAO
-if (!file.exists(paste0(getwd(), "/Data/Production_Crops_E_All_Data.csv"))) {
-  download.file("http://faostat.fao.org/Portals/_Faostat/Downloads/zip_files/Production_Crops_E_All_Data.zip", 
-                tf_FAO, mode = "wb") # this is a large file
-  FAO <- unzip(tf_FAO, exdir = "Data") # unzip csv file from FAO
-}
+# CSV file for crop production data downloaded from FAO:
+  # Food and Agriculture Organization of the United Nations. FAOSTAT. Crops
+  # ( National Production). (Latest update: Dataset) Accessed (06 Mar 2014).
+  # URI: 4 May 2017
 
-FAO <- read_csv("Data/Production_Crops_E_All_Data.csv")
+FAO <- readr::read_csv("data/dump.csv.zip")
 
 # Data munging -----------------------------------------------------------------
-FAO <- subset(FAO, CountryCode < 5000) # select only countries, not areas
+FAO <- subset(FAO, Crops == "Potatoes") # select only potatoes
 FAO <- subset(FAO, Year == max(FAO$Year)) # select the most recent year available
-FAO <- subset(FAO, Item == "Potatoes") # select only potatoes
-FAO <- FAO[, -11] # drop the flag column
-
-yield <- subset(FAO, Element == "Yield") # select for yield
-production <- subset(FAO, Element == "Area harvested") # Select for area harvested
-names(production)[9:10] <- c("AreaUnit", "AreaHarvested") # Rename the production columns
-FAO <- merge(production, yield, by = c( "CountryCode", "Country", "ItemCode",
-                                        "Item", "Year")) 
-names(FAO)[14:15] <- c("YieldUnit", "Yield") 
-
-# Replace names of countries that will not match rworldmap data names 
-FAO <- subset(FAO, Country != "China")
-FAO[, 2][FAO[, 2] == "China, mainland"] <- "China"
-FAO <- subset(FAO, Country != "China, Macao SAR") # Remove Macao, neglible potoato
-FAO <- subset(FAO, Country != "China, Hong Kong SAR") # Remove Hong Kong, neglible potoato
-FAO[, 2][FAO[, 2] == "China, Taiwan Province of"] <- "Taiwan"
-FAO[, 2][FAO[, 2] == "Sudan (former)"] <- "Sudan"
-FAO[, 2][FAO[, 2] == "Cabo Verde"] <- "Cape Verde"
-FAO[, 2][FAO[, 2] == "Venezuela (Bolivarian Republic of)"] <- "Venezuela"
-FAO[, 2][FAO[, 2] == "Russian Federation"] <- "Russia"
-FAO[, 2][FAO[, 2] == "C\xf4te d'Ivoire"] <- "Ivory Coast"
-FAO[, 2][FAO[, 2] == "Iran (Islamic Republic of)"] <- "Iran"
-FAO[, 2][FAO[, 2] == "France"] <- sum(FAO[, 10][FAO[, 2] == "France" &&
-                                                  "R\xe9union"])
-FAO[, 2][FAO[, 2] == 0] <- "France"
-FAO <- subset(FAO, Country != "R\xe9union")
 
 # create an object of only Nepal for map of change in Nepal
 nepal <- subset(NE, admin == "Nepal")
@@ -116,8 +82,8 @@ raster_df$cuts <- cut(raster_df$layer,
 
 
 averages <- na.omit(data.frame(values@data$sovereignt,
-                               values@data$Yield,
-                               values@data$AreaHarvested,
+                               values@data$`Yield [hg/ha]`,
+                               values@data$`Area Harvested [ha]`,
                                values@data$CRUCL2.0_SimCastMeta_Susceptible_Prediction,
                                values@data$A2_SimCastMeta_Susceptible_Prediction,
                                values@data$layer))
@@ -135,8 +101,8 @@ ggplot() +
                    group = group, 
                    fill = cuts), 
                colour = "black", size = 0.25) + 
-  scale_fill_viridis() +
-  theme_tufte() +
+  scale_fill_viridis(discrete = TRUE) +
+  theme_minimal() +
   xlab("Longitude") +
   ylab("Latitude") +
   ggtitle("Change Daily Blight Unit Accumulation Per Potato Growing Season") +
@@ -171,13 +137,15 @@ top10 <- data.frame(tail(sorted, 10))
 
 top10 
 
-ggplot(top10, aes(x = HaPotato, y = Change, size = Yield/10000,
-                  label = Country)) +
-  geom_point(colour = "white", fill = "red", shape = 21, alpha = 0.5) + 
+ggplot(top10, aes(x = HaPotato, y = Change, size = Yield/10000)) +
+  geom_point(shape = 21, alpha = 0.5, (aes(fill = Change))) + 
+  scale_fill_viridis() +
   scale_size_area(max_size = 30, "Yield (T/Ha)") +
+  geom_text(aes(x = HaPotato, y = Change, label = Country),
+             position = position_dodge(width = 1),
+             size = 3) +
   xlab("Potato production (Ha)") +
-  ylab("Change in daily blight unit accumulation") +
-  geom_text(size = 4)
+  ylab("Change in daily blight unit accumulation")
 
 
 sorted_blight <- averages[order(averages$Change), ]
@@ -190,7 +158,7 @@ top10_blight
 ggplot(top10_blight, aes(x = factor(Country), y = Change)) +
   geom_bar(stat = "identity", aes(fill = Change)) +
   xlab("Country") +
-  scale_fill_gradient("Blight Units") +
+  scale_fill_viridis("Blight Units") +
   ylab("Blight Units") +
   coord_flip()
 

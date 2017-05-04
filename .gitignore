@@ -18,29 +18,8 @@
 
 *.html
 
-ne_50m_admin_0_countries.dbf
-
-ne_50m_admin_0_countries.prj
-
-ne_50m_admin_0_countries.shp
-
-ne_50m_admin_0_countries.README.html
-
-ne_50m_admin_0_countries.shx
-
-ne_50m_admin_0_countries.VERSION.txt
-
-Production_Crops_E_All_Data.csv
-
 *.rds
-
-ne_50m_admin_0_countries.VERSION.txt
 
 *.pper
 
 *.Rproj.user
-.Rproj.user
-
-.Rproj.user/BBCF1FEA/pcs/files-pane.pper
-
-*.pper
