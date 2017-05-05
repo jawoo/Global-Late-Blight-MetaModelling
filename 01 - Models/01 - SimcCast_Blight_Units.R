@@ -30,7 +30,7 @@ resistance = "S"
 #resistance = "R"
 
 # Load libraries ---------------------------------------------------------------
-require("readr")
+library("readr")
 
 ConsR <- NULL
 DayR <- NULL
