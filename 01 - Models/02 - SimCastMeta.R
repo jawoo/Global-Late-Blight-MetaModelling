@@ -3,28 +3,42 @@
 # purpose       : Create a SimCastMeta GAM model for a daily or monthly
 #                 time-step;
 # producer      : prepared by A. Sparks;
-# last update   : in Toowoomba, QLD, Jun 2016;
+# last update   : in Toowoomba, QLD, Nov 2018;
 # inputs        : blight unit values as calculated in SimCast_Blight_Units.R;
 # outputs       : GAM suitable for predicting late blight risk using daily T
 #                 and RH data
 #                 graphs illustrating fit of the model;
 # remarks       : this model is documented in:
 #                 Sparks, A. H., Forbes, G. A., Hijmans, R. J., & Garrett,
-#                 K. A. (2011). 
+#                 K. A. (2011).
 #                 A metamodeling framework for extending the application domain
-#                 of process-based 
+#                 of process-based
 #                 ecological models. Ecosphere, 2(8), art90.
 #                 doi:10.1890/ES11-00128.1
 # Licence:      : GPL2;
 ################################################################################
 
 # Load libraries ---------------------------------------------------------------
-require("mgcv")
-require("ggplot2")
-require("ggthemes")
-require("plyr")
-require("readr")
-require("rgl")
+if (!require("mgcv")) {
+  install.packages("mgcv", repos = "http://cran.rstudio.com/")
+  library("mgcv")
+}
+if (!require("tidyverse")) {
+  install.packages("tidyverse", repos = "http://cran.rstudio.com/")
+  library("tidyverse")
+}
+if (!require("ggthemes")) {
+  install.packages("ggthemes", repos = "http://cran.rstudio.com/")
+  library("ggthemes")
+}
+if (!require("plyr")) {
+  install.packages("plyr", repos = "http://cran.rstudio.com/")
+  library("plyr")
+}
+if (!require("rgl")) {
+  install.packages("rgl", repos = "http://cran.rstudio.com/")
+  library("rgl")
+}
 
 # Load data --------------------------------------------------------------------
 
@@ -37,7 +51,7 @@ require("rgl")
 # Create a RESISTANT cultivar model with this data for daily weather data
 #blight_units <- read_tsv("Cache/Blight Units/daily_resistant_blight_units.txt")
 
-# Data for monthly models 
+# Data for monthly models
 # Create a SUSCEPTIBLE model with this data for monthly weather data
 blight_units <- read_tsv("Cache/Blight Units/monthly_susceptible_blight_units.txt")
 
@@ -54,11 +68,11 @@ testing_data <- subset(blight_units, Year >= 1993)
 
 # Modelling --------------------------------------------------------------------
 # A k of 150 generated the most biologically believable model with the daily
-# data we used based on GCV score 
+# data we used based on GCV score
 # higher values indicate a "better fitting" model, but an examination of the 3D
 # surface indicates otherwise
 
-gam_predict <- gam(Blight~s(C, RH, k = 150), data = construction_data)
+gam_predict <- gam(Blight ~ s(C, RH, k = 150), data = construction_data)
 summary(gam_predict)
 
 # Test the model
@@ -96,11 +110,11 @@ vis.gam(
 # Boxplots with 1:1 line (dashed) and fitted line (blue)
 p <- ggplot(test_plot, aes(y = blight_prediction, x = blight))
 
-p + geom_tufteboxplot(outlier.shape = NA, 
-                      aes(group = round_any(blight, 0.1, floor))) + 
-  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) + 
-  geom_abline(intercept = 0, slope = 1, linetype = "dashed") + 
-  scale_x_continuous("Blight Units Predicted by SimCast") + 
+p + geom_tufteboxplot(outlier.shape = NA,
+                      aes(group = round_any(blight, 0.1, floor))) +
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed") +
+  scale_x_continuous("Blight Units Predicted by SimCast") +
   scale_y_continuous("Blight Units Predicted by SimCast_Meta") +
   theme_tufte() +
   ggtitle("Predicted Blight Units for a Susceptible Cultivar")
